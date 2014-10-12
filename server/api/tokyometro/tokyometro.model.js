@@ -1,17 +1,22 @@
 'use strict';
 
-
 var ACCSS_TOKEN = process.env.TOKYOMETRO_ACCESS_TOKEN;
-
 var BASE_URL = "https://api.tokyometroapp.jp/api/v2/datapoints";
 
 var request = require('request');
+var config = require('../../config/environment');
 
 exports.request = function(type, callback) {
   if (!type)
     throw("Specify a type argument.");
   if (!callback)
     throw("Specify a callback argument.");
+
+  if (config.usingMock) {
+    var mock = require("./tokyometro.mock");
+    callback(null, mock.mockData[type]);
+    return;
+  }
 
   var url = BASE_URL + "?rdf:type=" + type +
           "&acl:consumerKey=" + ACCSS_TOKEN;
