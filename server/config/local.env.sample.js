@@ -9,6 +9,9 @@ module.exports = {
   DOMAIN:           'http://localhost:9000',
   SESSION_SECRET:   'metrolife-secret',
 
+  // See https://developer.tokyometroapp.jp/oauth/applications
+  TOKYOMETRO_ACCESS_TOKEN: '',
+
   // Control debug level for modules using visionmedia/debug
   DEBUG: ''
 };
