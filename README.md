@@ -8,22 +8,29 @@ Checkout sources
 
     $ git clone git@github.com:ikeyasu/metro-life.git
 
-Run mongoDB
+Run mongoDB. (It's not under the 'metro-life' directory.)
 
-    $ mongod --dbpath mongodb/
+    $ mkdir -f mongodb-metr-life
+    $ mongod --dbpath mongodb-metr-life/
+
+Install dependencies.
+
+    $ cd metro-life
+    $ npm install
+    $ bower install
 
 Edit `server/config/local.env.js`
 
-    $ cd metro-life
     $ cp server/config/local.env.sample.js server/config/local.env.js 
     $ vi server/config/local.env.js
 
+server/config/local.env.js
 
     module.exports = {
       DOMAIN:           'http://localhost:9000',
       SESSION_SECRET:   'metrolife-secret',
       // See https://developer.tokyometroapp.jp/oauth/applications
-      TOKYOMETRO_ACCESS_TOKEN: '{access token}',
+      TOKYOMETRO_ACCESS_TOKEN: '{access token}', // <=== EDIT HERE!
       // Control debug level for modules using visionmedia/debug
       DEBUG: ''
     };
@@ -32,3 +39,29 @@ Edit `server/config/local.env.js`
 Open another terminal and run server
 
     $ grunt serve
+
+
+Testing
+=======
+
+See [generator-angular-fullstack](https://github.com/DaftMonk/generator-angular-fullstack#testing) for details.
+
+Jasmine and Mocha tests
+-----------------------
+
+Run tests
+
+    $ grunt test # Run all tests
+    $ grunt test:client # client tests only (Jasmine)
+    $ grunt test:server # server tests only (Mocha)
+
+Protractor tests
+----------------
+
+You need to first run
+
+    $ npm run update-webdriver
+
+Then,
+
+    $ grunt test:e2e
