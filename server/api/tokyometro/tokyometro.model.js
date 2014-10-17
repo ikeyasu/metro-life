@@ -1,27 +1,29 @@
 'use strict';
 
-var ACCSS_TOKEN = process.env.TOKYOMETRO_ACCESS_TOKEN;
+var ACCESS_TOKEN = process.env.TOKYOMETRO_ACCESS_TOKEN;
 var BASE_URL = "https://api.tokyometroapp.jp/api/v2/datapoints";
 
 var request = require('request');
+var querystring = require('querystring');
 var config = require('../../config/environment');
 
-exports.request = function(type, callback) {
-  if (!type)
-    throw("Specify a type argument.");
+exports.request = function(param, callback) {
+  if (!param)
+    throw("Specify a param argument.");
   if (!callback)
     throw("Specify a callback argument.");
 
+
   if (config.usingMock) {
     var mock = require("./tokyometro.mock");
-    callback(null, mock.mockData[type]);
+    var query = querystring.stringify(param);
+    callback(null, mock.mockData[query]);
     return;
   }
 
-  var url = BASE_URL + "?rdf:type=" + type +
-          "&acl:consumerKey=" + ACCSS_TOKEN;
+  param["acl:consumerKey"] = ACCESS_TOKEN;
 
-  request(url,
+  request(BASE_URL + "?" + querystring.stringify(param),
           function (error, response, body) {
     if (error) callbackAsError(callback);
     if (response.headers["content-type"] != "application/json")
@@ -32,7 +34,11 @@ exports.request = function(type, callback) {
 }
 
 exports.requestTrains = function(callback) {
-  return exports.request("odpt:Train", callback);
+  return exports.request({"rdf:type": "odpt:Train"}, callback);
+}
+
+exports.requestStation = function(id, callback) {
+  return exports.request({"rdf:type": "odpt:Station", "@id": id}, callback);
 }
 
 function callbackAsError(callback) {
