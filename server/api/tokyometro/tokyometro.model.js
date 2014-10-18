@@ -26,7 +26,7 @@ exports.request = function(param, callback) {
   request(BASE_URL + "?" + querystring.stringify(param),
           function (error, response, body) {
     if (error) callbackAsError(callback);
-    if (response.headers["content-type"] != "application/json")
+    if (response.headers["content-type"] !== "application/json")
       callbackAsError(callback);
 
     callback(null, JSON.parse(body));
