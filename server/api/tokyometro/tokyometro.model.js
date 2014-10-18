@@ -37,8 +37,8 @@ exports.requestTrains = function(callback) {
   return exports.request({"rdf:type": "odpt:Train"}, callback);
 }
 
-exports.requestStation = function(id, callback) {
-  return exports.request({"rdf:type": "odpt:Station", "@id": id}, callback);
+exports.requestStation = function(station, callback) {
+  return exports.request({"rdf:type": "odpt:Station", "owl:sameAs": station}, callback);
 }
 
 function callbackAsError(callback) {
