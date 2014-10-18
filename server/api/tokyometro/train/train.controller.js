@@ -33,7 +33,7 @@ exports.delayed = function(req, res) {
 // Get a single
 exports.show = function(req, res) {
   // Not implemented yet
-  return res.send(500, err);
+  return res.send(500);
 };
 
 function handleError(res, err) {
