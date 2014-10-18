@@ -12,7 +12,7 @@ if [[ $TRAVIS_PULL_REQUEST == "false" && $TRAVIS_BRANCH == "master" ]]
     gem install heroku
     echo yes | heroku keys:add
     echo yes | grunt buildcontrol:heroku
-    heroku keys:clear
+    heroku keys:remove `cat ~/.ssh/id_rsa.pub | cut -d " " -f  3`
 fi
 echo
 echo "...done."
