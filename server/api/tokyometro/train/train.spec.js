@@ -3,6 +3,7 @@
 var should = require('should');
 var app = require('../../../app');
 var request = require('supertest');
+var config = require('../../../config/environment');
 
 describe('GET /api/tokyometro/trains', function() {
   it('should respond with JSON array', function(done) {
@@ -27,6 +28,8 @@ describe('GET /api/tokyometro/trains/delayed', function() {
       .end(function(err, res) {
         if (err) return done(err);
         res.body.should.be.instanceof(Array);
+        if (config.usingMock)
+          res.body.length.should.be.equal(1);
         done();
       });
   });
