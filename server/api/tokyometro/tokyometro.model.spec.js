@@ -28,8 +28,9 @@ describe('/api/tokyometro.model#requestTrains', function() {
 });
 
 describe('/api/tokyometro.model#requestStation', function() {
-  it('should respond with JSON array', function(done) {
-    Tokyometro.requestStation("odpt.Station:TokyoMetro.Ginza.AoyamaItchome", function(err, res) {
+  it('should respond with JSON array and AoyamaIchome', function(done) {
+    Tokyometro.requestStation("odpt.Station:TokyoMetro.Ginza.AoyamaItchome",
+    function(err, res) {
       should.not.exist(err);
       res.should.be.instanceof(Array)
       res[0]["@context"].should.equal("http://vocab.tokyometroapp.jp/context_odpt_Station.jsonld");
