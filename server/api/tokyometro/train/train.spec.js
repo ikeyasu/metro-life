@@ -46,7 +46,7 @@ describe('/api/train/train.model#requestTrainsNearBy', function() {
       should.not.exist(err);
       res.should.be.instanceof(Object)
       if (config.usingMock)
-        res["odpt.Station:TokyoMetro.Tozai.Nakano"].length.should.equal(4);
+        res["odpt.Station:TokyoMetro.Tozai.Nakano"].length.should.equal(3);
       done();
     });
   });

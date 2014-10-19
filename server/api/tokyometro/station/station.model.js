@@ -17,11 +17,11 @@ exports.requestStationsNearBy = function(station, railway, callback) {
     var dest2 =  stations[stations.length - 1] ["odpt:station"];
     var result = {};
     var startIndex = Math.max(index - LENGTH_NEAR_BY, 0);
-    result[dest1] = stations.slice(startIndex, index).map(function(x) {
+    result[dest2] = stations.slice(startIndex, index).map(function(x) {
       return x["odpt:station"];
     }).reverse();
     var endIndex = Math.min(stations.length, index + LENGTH_NEAR_BY + 1);
-    result[dest2] = stations.slice(index + 1, endIndex).map(function(x) {
+    result[dest1] = stations.slice(index + 1, endIndex).map(function(x) {
       return x["odpt:station"];
     });
     callback(undefined, result);

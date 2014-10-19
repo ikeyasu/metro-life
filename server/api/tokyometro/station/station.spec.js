@@ -31,13 +31,15 @@ describe('/api/station/station.model#requestStationsNearBy', function() {
       res.should.be.instanceof(Object)
       res["odpt.Station:TokyoMetro.Tozai.Nakano"].length.should.equal(5);
       res["odpt.Station:TokyoMetro.Tozai.NishiFunabashi"].length.should.equal(5);
-      res["odpt.Station:TokyoMetro.Tozai.Nakano"][0]
-        .should.equal("odpt.Station:TokyoMetro.Tozai.Kasai");
-      res["odpt.Station:TokyoMetro.Tozai.Nakano"][4]
-        .should.equal("odpt.Station:TokyoMetro.Tozai.Kiba");
+
       res["odpt.Station:TokyoMetro.Tozai.NishiFunabashi"][0]
-        .should.equal("odpt.Station:TokyoMetro.Tozai.MinamiGyotoku");
+        .should.equal("odpt.Station:TokyoMetro.Tozai.Kasai");
       res["odpt.Station:TokyoMetro.Tozai.NishiFunabashi"][4]
+        .should.equal("odpt.Station:TokyoMetro.Tozai.Kiba");
+
+      res["odpt.Station:TokyoMetro.Tozai.Nakano"][0]
+        .should.equal("odpt.Station:TokyoMetro.Tozai.MinamiGyotoku");
+      res["odpt.Station:TokyoMetro.Tozai.Nakano"][4]
         .should.equal("odpt.Station:TokyoMetro.Tozai.NishiFunabashi");
       done();
     });
@@ -66,13 +68,15 @@ describe('GET /api/tokyometro/stations/nearby/odpt.Station:TokyoMetro.Tozai.Uray
         body.should.be.instanceof(Object)
         body["odpt.Station:TokyoMetro.Tozai.Nakano"].length.should.equal(5);
         body["odpt.Station:TokyoMetro.Tozai.NishiFunabashi"].length.should.equal(5);
-        body["odpt.Station:TokyoMetro.Tozai.Nakano"][0]
-          .should.equal("odpt.Station:TokyoMetro.Tozai.Kasai");
-        body["odpt.Station:TokyoMetro.Tozai.Nakano"][4]
-          .should.equal("odpt.Station:TokyoMetro.Tozai.Kiba");
+
         body["odpt.Station:TokyoMetro.Tozai.NishiFunabashi"][0]
-          .should.equal("odpt.Station:TokyoMetro.Tozai.MinamiGyotoku");
+          .should.equal("odpt.Station:TokyoMetro.Tozai.Kasai");
         body["odpt.Station:TokyoMetro.Tozai.NishiFunabashi"][4]
+          .should.equal("odpt.Station:TokyoMetro.Tozai.Kiba");
+
+        body["odpt.Station:TokyoMetro.Tozai.Nakano"][0]
+          .should.equal("odpt.Station:TokyoMetro.Tozai.MinamiGyotoku");
+        body["odpt.Station:TokyoMetro.Tozai.Nakano"][4]
           .should.equal("odpt.Station:TokyoMetro.Tozai.NishiFunabashi");
         done();
       });
