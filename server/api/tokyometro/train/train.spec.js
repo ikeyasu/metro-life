@@ -46,16 +46,16 @@ describe('/api/train/train.model#requestTrainsNearBy', function() {
       should.not.exist(err);
       res.should.be.instanceof(Object)
       if (config.usingMock) {
-        res["odpt.Station:TokyoMetro.Tozai.Nakano"].length.should.equal(3);
+        res["odpt.Station:TokyoMetro.Tozai.Nakano"].length.should.equal(2);
       }
       res["odpt.Station:TokyoMetro.Tozai.Nakano"].forEach(function(trains) {
         trains.forEach(function(train) {
-          train["odpt:railDirection"].should.equal("odpt.Station:TokyoMetro.Tozai.Nakano");
+          train["odpt:railDirection"].should.equal("odpt.RailDirection:TokyoMetro.Nakano");
         });
       });
       res["odpt.Station:TokyoMetro.Tozai.NishiFunabashi"].forEach(function(trains) {
         trains.forEach(function(train) {
-          train["odpt:railDirection"].should.equal("odpt.Station:TokyoMetro.Tozai.NishiFunabashi");
+          train["odpt:railDirection"].should.equal("odpt.RailDirection:TokyoMetro.NishiFunabashi");
         });
       });
       done();

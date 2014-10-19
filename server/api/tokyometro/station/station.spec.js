@@ -55,6 +55,15 @@ describe('/api/station/station.model#convertToRailway', function() {
   });
 });
 
+describe('/api/station/station.model#convertToRailDirection', function() {
+  it('should respond with railway name',
+  function(done) {
+    Station.convertToRailDirection("odpt.Station:TokyoMetro.Tozai.NishiFunabashi")
+      .should.equal("odpt.RailDirection:TokyoMetro.NishiFunabashi");
+    done();
+  });
+});
+
 describe('GET /api/tokyometro/stations/nearby/odpt.Station:TokyoMetro.Tozai.Urayasu',
   function() {
   it('should respond with JSON array', function(done) {
