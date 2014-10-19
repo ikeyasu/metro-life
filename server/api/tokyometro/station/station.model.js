@@ -29,8 +29,12 @@ exports.requestStationsNearBy = function(station, railway, callback) {
 };
 
 
-function convertToRailway(station) {
+exports.convertToRailway = function(station) {
   var splitted = station.split(/[.:]/)
   return splitted[0] + "." + "Railway:" + splitted[2] + "." + splitted[3];
 }
-exports.convertToRailway = convertToRailway;
+
+exports.convertToRailDirection = function(station) {
+  var splitted = station.split(/[.:]/)
+  return splitted[0] + "." + "RailDirection:" + splitted[2] + "." + splitted[4];
+}

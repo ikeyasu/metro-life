@@ -3,26 +3,27 @@
 var Tokyometro = require("../tokyometro.model");
 var Station = require("../station/station.model");
 
+/*jshint -W083 */
 exports.requestTrainsNearBy = function(station, railway, callback) {
   Tokyometro.requestTrains(function(err, allTrains) {
     Station.requestStationsNearBy(station, railway, function(err, stations) {
-      function reduceNearStation(prev, cur, index) {
-        var nearTrains = findTrainsAtStation(cur, allTrains);
-        if (nearTrains.length > 0)
-          prev.push(nearTrains);
-        return prev;
-      }
       for (var dest in stations) {
-        stations[dest] = stations[dest].reduce(reduceNearStation, []);
+        stations[dest] = stations[dest].reduce(function (prev, cur, index) {
+          var nearTrains = findTrainsAtStation(cur, dest, allTrains);
+          if (nearTrains.length > 0)
+            prev.push(nearTrains);
+          return prev;
+        }, []);
       }
       callback(undefined, stations);
     });
   });
 };
 
-function findTrainsAtStation(station, trains) {
+function findTrainsAtStation(station, destStation, trains) {
   return trains.reduce(function(prev, cur) {
-    if (cur["odpt:fromStation"] === station)
+    if (cur["odpt:fromStation"] === station &&
+        cur["odpt:railDirection"] === Station.convertToRailDirection(destStation))
       prev.push(cur);
     return prev
   }, []);
