@@ -7,7 +7,7 @@ exports.requestStationsNearBy = function(station, railway, callback) {
   Tokyometro.requestStationsFromRailway(railway, function(err, res) {
     var stations = res[0]["odpt:stationOrder"];
     var index = stations.reduce(function(prev, cur) {
-      if (cur["odpt:station"] == station) {
+      if (cur["odpt:station"] === station) {
         return cur["odpt:index"];
       }
       return prev;
