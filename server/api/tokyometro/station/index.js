@@ -5,6 +5,7 @@ var controller = require('./station.controller');
 
 var router = express.Router();
 
-router.get('/:id', controller.show);
+router.get('/:station', controller.show);
+router.get('/nearby/:station', controller.nearby);
 
 module.exports = router;

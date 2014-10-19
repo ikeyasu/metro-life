@@ -41,6 +41,10 @@ exports.requestStation = function(station, callback) {
   return exports.request({"rdf:type": "odpt:Station", "owl:sameAs": station}, callback);
 }
 
+exports.requestStationsFromRailway = function(railway, callback) {
+  return exports.request({"rdf:type": "odpt:Railway", "owl:sameAs": railway}, callback);
+}
+
 function callbackAsError(callback) {
   callback(true, null);
 }
