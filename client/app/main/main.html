@@ -1,26 +1,53 @@
-<div ng-include="'components/navbar/navbar.html'"></div>
-
+<!-- <div ng-include="'components/navbar/navbar.html'"></div> -->
+<!-- 
 <header class="hero-unit" id="banner">
   <div class="container">
     <h1>Metro Life</h1>
   </div>
-</header>
-
-<div class="container">
-  <div class="row">
-    <div class="col-lg-12">
-      <h1 class="page-header">Delayed trains:</h1>
-      <ul class="nav nav-tabs nav-stacked col-md-4 col-lg-4 col-sm-6" ng-repeat="train in trains">
-        <li><a href="#" tooltip="{{train['odpt:fromStation']}}">{{train['odpt:fromStation']}} : {{train['odpt:delay']}}</a></li>
-      </ul>
+</header> -->
+<div class="wrapper">
+    <div class="head">
+        <div class="text">駅名 行き先</div>
     </div>
-  </div>
+
+    <div class="">
+        <div class="circle">
+            <div class="time">00:00</div>
+            <div class="status">status</div>
+        </div>
+
+        <div class="dot"></div>
+
+    </div>
+    <div class="">
+        <div class="bar-wrap">
+            <div class="content bar">
+                <div class="train-type">trainType</div>
+                <div class="time-to-station">TimeToThisStation</div>
+            </div>
+            <div class="delayed-time">delayedTime</div>
+            <div class="bg-line"></div>
+        </div>
+    </div>
+    <nav>
+        <div id="" class="menu">
+            <div id="selected-station" class="inner">浦安駅</div>
+        </div>
+        <div id="" class="menu">
+            <div id="selected-destination" class="inner">中野行</div>
+        </div>
+    </nav>
+    <div class="">
+      <div class="row">
+        <div class="col-sx-12">
+          <ul class="nav nav-tabs nav-stacked col-sm-6" ng-repeat="train in trains">
+            <li><a href="#" tooltip="{{train['odpt:fromStation']}}">{{train['odpt:fromStation']}} : {{train['odpt:delay']}}</a><br><br>
+    <a href="#" tooltip="{{train['odpt:fromStation']}}">{{train['odpt:toStation']}} : {{train['odpt:delay']}}</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
 </div>
 
-<footer class="footer">
-  <div class="container">
-      <p>Angular Fullstack v2.0.13 |
-        <a href="https://twitter.com/tyhenkel">@tyhenkel</a> |
-         <a href="https://github.com/DaftMonk/generator-angular-fullstack/issues?state=open">Issues</a></p>
-  </div>
-</footer>
+
