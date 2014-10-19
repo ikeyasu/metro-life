@@ -4,6 +4,7 @@ var should = require('should');
 var app = require('../../../app');
 var request = require('supertest');
 var config = require('../../../config/environment');
+var Train = require('./train.model');
 
 describe('GET /api/tokyometro/trains', function() {
   it('should respond with JSON array', function(done) {
@@ -29,7 +30,38 @@ describe('GET /api/tokyometro/trains/delayed', function() {
         if (err) return done(err);
         res.body.should.be.instanceof(Array);
         if (config.usingMock)
-          res.body.length.should.be.equal(1);
+          res.body.length.should.be.equal(2);
+        done();
+      });
+  });
+});
+
+describe('/api/train/train.model#requestTrainsNearBy', function() {
+  it('should respond with JSON object with trains near by specified station',
+  function(done) {
+    Train.requestTrainsNearBy(
+      "odpt.Station:TokyoMetro.Tozai.Urayasu",
+      "odpt.Railway:TokyoMetro.Tozai",
+    function(err, res) {
+      should.not.exist(err);
+      res.should.be.instanceof(Object)
+      if (config.usingMock)
+        res["odpt.Station:TokyoMetro.Tozai.Nakano"].length.should.equal(4);
+      done();
+    });
+  });
+});
+
+describe('GET /api/tokyometro/trains/nearby/odpt.Station:TokyoMetro.Tozai.Urayasu',
+function() {
+  it('should respond with JSON array', function(done) {
+    request(app)
+      .get('/api/tokyometro/trains/nearby/odpt.Station:TokyoMetro.Tozai.Urayasu')
+      .expect(200)
+      .expect('Content-Type', /json/)
+      .end(function(err, res) {
+        if (err) return done(err);
+        res.body.should.be.instanceof(Object);
         done();
       });
   });

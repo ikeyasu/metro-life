@@ -17,7 +17,11 @@ exports.request = function(param, callback) {
   if (config.usingMock) {
     var mock = require("./tokyometro.mock");
     var query = querystring.stringify(param);
-    callback(null, mock.mockData[query]);
+    var data = mock.mockData[query];
+    if (!data) {
+      console.log("Cannot find mock data: " + querystring.stringify(param));
+    }
+    callback(null, data);
     return;
   }
 

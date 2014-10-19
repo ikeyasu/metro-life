@@ -9,6 +9,8 @@
 
 var _ = require('lodash');
 var Tokyometro = require('../tokyometro.model');
+var Train = require('./train.model');
+var Station = require('../station/station.model');
 
 // Get list
 exports.index = function(req, res) {
@@ -34,6 +36,17 @@ exports.delayed = function(req, res) {
 exports.show = function(req, res) {
   // Not implemented yet
   return res.send(500);
+};
+
+// Get trains nearby the staton
+exports.nearby = function(req, res) {
+  Train.requestTrainsNearBy(
+    req.params.station,
+    Station.convertToRailway(req.params.station),
+  function(err, json){
+    if (err) return res.send(500, err);
+    return res.json(200, json);
+  });
 };
 
 function handleError(res, err) {
