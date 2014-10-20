@@ -1,8 +1,9 @@
 /**
  * Using Rails-like standard naming convention for endpoints.
- * GET     /trains              ->  list of all trains
- * GET     /trains/:id          ->  show
- * GET     /trains/delayed      ->  list of delayed trains
+ * GET     /trains                   ->  list of all trains
+ * GET     /trains/:id               ->  show
+ * GET     /trains/delayed           ->  list of delayed trains
+ * GET     /trains/nearby/:station   ->  show
  */
 
 'use strict';
