@@ -1,0 +1,157 @@
+$icon-font-path: "/bower_components/bootstrap-sass-official/vendor/assets/fonts/bootstrap/";
+$fa-font-path: "/bower_components/font-awesome/fonts";
+
+@import 'bootstrap-sass-official/vendor/assets/stylesheets/bootstrap';
+@import 'font-awesome/scss/font-awesome';
+
+// Component styles are injected through grunt
+// injector
+@import 'app1.scss';
+@import 'main/main.scss';
+// endinjector
+
+
+
+/**
+ * Bootstrap Fonts
+ */
+
+@font-face {
+    font-family: 'Glyphicons Halflings';
+    src: url('../bower_components/bootstrap/fonts/glyphicons-halflings-regular.eot');
+    src: url('../bower_components/bootstrap/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'),
+    url('../bower_components/bootstrap/fonts/glyphicons-halflings-regular.woff') format('woff'),
+    url('../bower_components/bootstrap/fonts/glyphicons-halflings-regular.ttf') format('truetype'),
+    url('../bower_components/bootstrap/fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
+}
+
+/**
+ *Font Awesome Fonts
+ */
+
+@font-face {
+    font-family: 'FontAwesome';
+    src: url('../bower_components/font-awesome/fonts/fontawesome-webfont.eot?v=4.1.0');
+    src: url('../bower_components/font-awesome/fonts/fontawesome-webfont.eot?#iefix&v=4.1.0') format('embedded-opentype'),
+    url('../bower_components/font-awesome/fonts/fontawesome-webfont.woff?v=4.1.0') format('woff'),
+    url('../bower_components/font-awesome/fonts/fontawesome-webfont.ttf?v=4.1.0') format('truetype'),
+    url('../bower_components/font-awesome/fonts/fontawesome-webfont.svg?v=4.1.0#fontawesomeregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/**
+ * App-wide Styles
+ */
+
+.browsehappy {
+    margin: 0.2em 0;
+    background: #ccc;
+    color: #000;
+    padding: 0.2em 0;
+}
+body{
+    color:rgba(255,255,255,0.6)!important;
+}
+.wrapper{
+    /*background-color:#2B3A4A;*/
+    background-color:#2B3A4A;
+    height:100%;
+    margin:0 auto;
+    overflow:hidden;
+    positiion:absolute;
+    width:480px;
+}
+.head{
+    background-color:rgba(0,0,0,0.15);
+    color:#fff!important;
+    text-align:center;
+}
+.head .text{
+    margin:0 auto;
+    opacity:0.6;
+    padding:5px 0;
+}
+.circle{
+    background-image:url("./images/noise.png");
+    border:15px solid rgba(0,0,0,0.2);
+    border-radius:130px;
+    box-shadow: 0 0 1px 1px #16B0D1 inset;
+    height:260px;
+    margin:50px auto;
+	text-align:center;
+    width:260px;
+    .time{
+    	color:rgba(255,255,255,0.8);
+    	font-size:70px;
+    	margin-top:60px;
+    }
+    .status{
+    	color:rgba(255,255,255,0.15);
+    	font-size:24px;
+    }
+}
+
+.dot{
+    position:absolute;
+    border-radius:20px;
+    .blue{
+	    background-color:#5AD3F2;
+	    height:20px;
+	    width:20px;
+	}
+	.yellow{
+	    background-color:#EAB847;
+	    height:20px;
+	    width:20px;
+	}
+	.red{
+	    background-color:#EC5757;
+	    height:20px;
+	    width:20px;
+	}
+}
+
+.dot.selected{
+    width:25px!important;
+    height:25px!important;
+}
+.bar-wrap{
+	position:relative;
+}
+.bar {
+    line-height:24px;
+    padding:8px;
+    display:block;
+    float:none;
+    position:absolute;
+    .train-type{
+    	left:0;
+    	position:absolute;
+    }
+    .time-to-station{
+    	right:0;
+    	position:absolute;
+    }
+    .bg-line{
+    	position:absolute;
+    	width:100%;
+    }
+}
+
+nav{
+	display:table;
+	position:relative;
+	width:100%;
+}
+.menu{
+    color:rgba(255,255,255,0.6);
+    display:table-cell;
+    .inner{
+    	margin-right:1px;
+    	padding:20px 0;
+    	text-align:center;
+    	width:auto;
+    	background-color:rgba(0,0,0,0.15);
+    }
+}
