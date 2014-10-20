@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/ikeyasu/metro-life.png?label=ready&title=Ready)](https://waffle.io/ikeyasu/metro-life)
 metro-life
 ==========
 
