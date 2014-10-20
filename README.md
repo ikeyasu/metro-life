@@ -1,4 +1,4 @@
-[![Stories in Ready](https://badge.waffle.io/ikeyasu/metro-life.png?label=ready&title=Ready)](https://waffle.io/ikeyasu/metro-life)
+[![Travis CI Status](https://travis-ci.org/ikeyasu/metro-life.svg)](https://travis-ci.org/ikeyasu/metro-life) [![Stories in Ready](https://badge.waffle.io/ikeyasu/metro-life.png?label=ready&title=Ready)](https://waffle.io/ikeyasu/metro-life)
 metro-life
 ==========
 
