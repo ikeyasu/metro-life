@@ -8,6 +8,5 @@ module.exports = {
     uri: 'mongodb://localhost/metrolife-dev'
   },
 
-  seedDB: true,
-  usingMock: true
+  seedDB: true
 };
