@@ -3,6 +3,9 @@
 var Tokyometro = require("../tokyometro.model");
 var Station = require("../station/station.model");
 
+var mongoose = require('mongoose'),
+    Schema = mongoose.Schema;
+
 /*jshint -W083 */
 exports.requestTrainsNearBy = function(station, railway, callback) {
   Tokyometro.requestTrains(function(err, allTrains) {
@@ -28,3 +31,10 @@ function findTrainsAtStation(station, destStation, trains) {
     return prev
   }, []);
 }
+
+var TrainTimetableSchema = new Schema({
+  trainNumber: String,
+  json: String
+});
+
+exports.TrainTimetable = mongoose.model('TrainTimetable', TrainTimetableSchema);

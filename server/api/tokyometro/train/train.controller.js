@@ -50,6 +50,15 @@ exports.nearby = function(req, res) {
   });
 };
 
+// Get train's timetable
+exports.timetable = function(req, res) {
+  Train.TrainTimetable.findOne({trainNumber: req.params.trainNumber},
+  function(err, doc){
+    if (err) return res.send(500, err);
+    return res.json(200, JSON.parse(doc.json));
+  });
+};
+
 function handleError(res, err) {
   return res.send(500, err);
 }
