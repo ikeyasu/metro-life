@@ -18,7 +18,8 @@
     "composable-middleware": "^0.3.0",
     "connect-mongo": "^0.4.1",
     "request": "^2.45.0",
-    "maxmin": "~1.0.0"
+    "maxmin": "~1.0.0",
+    "memjs": "~0.8.5"
   },
   "devDependencies": {
     "grunt": "~0.4.4",
