@@ -77,3 +77,28 @@ function() {
       });
   });
 });
+
+describe('/api/train/train.model#TrainTimetable', function() {
+  it('should store the timetable of train', function(done) {
+    Train.TrainTimetable.findOne({trainNumber: "A0819"}, function(err, doc) {
+      doc.trainNumber.should.equal("A0819");
+      done();
+    });
+  });
+});
+
+describe('GET /api/tokyometro/trains/timetable/A0819',
+function() {
+  it('should respond with JSON array', function(done) {
+    request(app)
+      .get('/api/tokyometro/trains/timetable/A0819')
+      .expect(200)
+      .expect('Content-Type', /json/)
+      .end(function(err, res) {
+        if (err) return done(err);
+        res.body.should.be.instanceof(Object);
+        res.body["odpt:trainNumber"].should.equal("A0819");
+        done();
+      });
+  });
+});

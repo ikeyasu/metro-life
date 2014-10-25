@@ -7,6 +7,9 @@ var request = require('request');
 var querystring = require('querystring');
 var config = require('../../config/environment');
 
+var mongoose = require('mongoose'),
+    Schema = mongoose.Schema;
+
 exports.request = function(param, callback) {
   if (!param)
     throw("Specify a param argument.");
@@ -52,3 +55,11 @@ exports.requestStationsFromRailway = function(railway, callback) {
 function callbackAsError(callback) {
   callback(true, null);
 }
+
+var ImportLogSchema = new Schema({
+  tableName: String,
+  source: String,
+  updated: Date
+});
+
+exports.ImportLog = mongoose.model('ImportLog', ImportLogSchema);
