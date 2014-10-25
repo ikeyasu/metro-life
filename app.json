@@ -1,0 +1,12 @@
+{
+  "name": "metro-life",
+  "env": {
+    "NODE_ENV": "production",
+    "NODE_PATH": "lib"
+    "TOKYOMETRO_ACCESS_TOKEN": "{{Set your access token}}"
+  },
+  "addons": [
+    "memcachedcloud:25",
+    "mongolab:sandbox"
+  ]
+}
