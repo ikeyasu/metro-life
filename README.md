@@ -5,6 +5,12 @@ metro-life
 How to run locally
 ==================
 
+Intall dependencies.
+
+OSX:
+
+    $ brew install mongodb memcached
+
 Checkout sources
 
     $ git clone git@github.com:ikeyasu/metro-life.git
@@ -14,7 +20,11 @@ Run mongoDB. (It's not under the 'metro-life' directory.)
     $ mkdir -f mongodb-metr-life
     $ mongod --dbpath mongodb-metr-life/
 
-Install dependencies.
+Run memcached. (Open new console)
+
+    $ memcached
+
+Install dependencies. (Open new console)
 
     $ cd metro-life
     $ npm install
