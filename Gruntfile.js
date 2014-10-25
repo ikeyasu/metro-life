@@ -393,6 +393,18 @@ module.exports = function (grunt) {
           branch: 'master'
         }
       },
+      herokudev1: {
+        options: {
+          remote: 'git@heroku.com:metro-life-dev-1.git',
+          branch: 'master'
+        }
+      },
+      herokudev2: {
+        options: {
+          remote: 'git@heroku.com:metro-life-dev-2.git',
+          branch: 'master'
+        }
+      },
       openshift: {
         options: {
           remote: 'openshift',
