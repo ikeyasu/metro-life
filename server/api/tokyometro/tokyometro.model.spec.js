@@ -4,6 +4,8 @@ var should = require('should');
 var app = require('../../app');
 var Tokyometro = require('./tokyometro.model');
 var seed = require('../../config/seed');
+var config = require('../../config/environment');
+var memjs = require('memjs');
 
 describe('/api/tokyometro.model#request', function() {
   it('should respond with JSON array', function(done) {
@@ -63,5 +65,40 @@ describe('/api/tokyometro.model#ImportLog', function() {
       doc[0].source.should.equal(seed.TRAINTABLE_SOURCE);
       done();
     });
+  });
+});
+
+describe('/api/tokyometro.model#requestJsonOrGetCache', function() {
+  if (config.usingMock) return; // should not test on offlinemode
+
+  it('should expire the cache', function(done) {
+    var client = memjs.Client.create();
+    var url = "http://ip.jsontest.com/";
+
+    Tokyometro.requestJsonOrGetCache(url,
+        function (error, json) {
+          setTimeout(function() {
+            client.get(url, function(err, val) {
+              should.exist(val);
+              JSON.parse(val.toString()).ip.should.equal(json.ip);
+            });
+          }, 0 /* msec */);
+
+          setTimeout(function() {
+            client.get(url, function(err, val) {
+              should.not.exist(val);
+              done();
+            });
+          }, 1010 /* msec */);
+        }, function(json) { return 1; });
+
+  });
+});
+
+describe('/api/tokyometro.model#frequencyResolver', function() {
+  it('should expire the cache', function(done) {
+    var mock = require("./tokyometro.mock").mockData["rdf%3Atype=odpt%3ATrain"];
+    Tokyometro.frequencyResolver(mock).should.equal(90);
+    done();
   });
 });
