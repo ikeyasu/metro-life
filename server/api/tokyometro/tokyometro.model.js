@@ -33,6 +33,7 @@ function requestJsonOrGetCache(url, callback, frequencyResolver) {
     request(url, function(error, response, body) {
       if (error) {
         callback(error, JSON.parse(body));
+        return;
       }
 
       if (response.headers["content-type"] !== "application/json") {
