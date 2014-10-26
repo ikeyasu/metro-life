@@ -1,5 +1,6 @@
 'use strict';
 
+var _ = require('lodash');
 var Tokyometro = require("../tokyometro.model");
 var LENGTH_NEAR_BY = 5;
 
