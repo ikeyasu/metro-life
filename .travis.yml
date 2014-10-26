@@ -5,7 +5,9 @@ before_script:
   - npm install -g bower grunt-cli
   - bower install
   - gem install sass
-services: mongodb
+services:
+  - mongodb
+  - memcached
 script:
   - grunt
 after_success:
