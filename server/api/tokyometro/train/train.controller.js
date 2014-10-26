@@ -3,7 +3,7 @@
  * GET     /trains                   ->  list of all trains
  * GET     /trains/:id               ->  show
  * GET     /trains/delayed           ->  list of delayed trains
- * GET     /trains/nearby/:station   ->  show
+ * GET     /trains/nearby/:station   ->  list of trains near by the station
  */
 
 'use strict';

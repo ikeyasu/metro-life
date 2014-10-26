@@ -24,10 +24,20 @@ exports.requestStationsNearBy = function(station, railway, callback) {
     result[dest1] = stations.slice(index + 1, endIndex).map(function(x) {
       return x["odpt:station"];
     });
-    callback(undefined, result);
+    callback(null, result);
   });
 };
 
+
+exports.requestRailDirection = function(station, callback) {
+  Tokyometro.request({"rdf:type": "odpt:StationTimetable", "odpt:station": station},
+      function(err, res) {
+        callback(null, _.uniq(res.reduce(function(prev, cur) {
+          prev.push(cur["odpt:railDirection"]);
+          return prev;
+        }, [])));
+      });
+};
 
 exports.convertToRailway = function(station) {
   var splitted = station.split(/[.:]/)
