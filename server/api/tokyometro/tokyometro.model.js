@@ -32,10 +32,10 @@ function requestJsonOrGetCache(url, callback, frequencyResolver) {
     }
     request(url, function(error, response, body) {
       if (error) {
-        callback(error, JSON.parse(body));
+        callback(error, body);
       }
 
-      if (response.headers["content-type"] !== "application/json") {
+      if (/application\/json/.exec(response.headers["content-type"]) === null) {
         callback(true, null);
         return;
       }
@@ -50,6 +50,7 @@ function requestJsonOrGetCache(url, callback, frequencyResolver) {
     });
   });
 }
+exports.requestJsonOrGetCache = requestJsonOrGetCache;
 
 exports.request = function(param, callback) {
   if (!param)
@@ -71,14 +72,6 @@ exports.request = function(param, callback) {
 
   param["acl:consumerKey"] = ACCESS_TOKEN;
 
-   var frequencyResolver = function(json) {
-     json.reduce(
-         function(prev, cur) {
-           if (cur["odpt:frequency"])
-             return Math.min(cur["odpt:frequency"], prev);
-           return prev;
-         }, DEFAULT_REQUEST_FREQUENCY);
-   };
   requestJsonOrGetCache(BASE_URL + "?" + querystring.stringify(param),
           function (error, json) {
     if (error) {
@@ -90,6 +83,16 @@ exports.request = function(param, callback) {
     callback(null, json);
   }, frequencyResolver);
 }
+
+function frequencyResolver(json) {
+  return json.reduce(
+      function(prev, cur) {
+        if (cur["odpt:frequency"])
+          return Math.min(cur["odpt:frequency"], prev);
+        return prev;
+      }, DEFAULT_REQUEST_FREQUENCY);
+}
+exports.frequencyResolver = frequencyResolver;
 
 exports.requestTrains = function(callback) {
   return exports.request({"rdf:type": "odpt:Train"}, callback);
