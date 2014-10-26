@@ -1,7 +1,8 @@
 /**
  * Using Rails-like standard naming convention for endpoints.
  * GET     /station/:station          ->  show
- * GET     /station/nearby/:station   ->  show
+ * GET     /station/nearby/:station   ->  staion nearby
+ * GET     /station/raildirection/:station   ->  raildirection at the station
  */
 
 'use strict';
@@ -25,6 +26,17 @@ exports.nearby = function(req, res) {
   Station.requestStationsNearBy(
       req.params.station,
       Station.convertToRailway(req.params.station),
+  function(err, json){
+    if(err) { return handleError(res, err); }
+    if(!json) { return res.send(404); }
+    return res.json(json);
+  });
+};
+
+// Get stations near by the specified station
+exports.raildirection = function(req, res) {
+  Station.requestRailDirection(
+      req.params.station,
   function(err, json){
     if(err) { return handleError(res, err); }
     if(!json) { return res.send(404); }

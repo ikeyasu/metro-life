@@ -11,6 +11,7 @@ module.exports = function(app) {
   // Insert routes below
   app.use('/api/tokyometro/trains', require('./api/tokyometro/train'));
   app.use('/api/tokyometro/stations', require('./api/tokyometro/station'));
+  app.use('/api/tokyometro/Railways', require('./api/tokyometro/railway'));
 
   // All undefined asset or api routes should return a 404
   app.route('/:url(api|auth|components|app|bower_components|assets)/*')

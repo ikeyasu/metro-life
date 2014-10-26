@@ -91,3 +91,40 @@ describe('GET /api/tokyometro/stations/nearby/odpt.Station:TokyoMetro.Tozai.Uray
       });
   });
 });
+
+describe('/api/station/station.model#requestRailDirection', function() {
+  it('should respond with JSON object with stations near by specified station',
+  function(done) {
+    Station.requestRailDirection(
+      "odpt.Station:TokyoMetro.Marunouchi.NakanoSakaue",
+    function(err, res) {
+      should.not.exist(err);
+      res.should.be.instanceof(Array);
+      res.length.should.equal(3);
+      res[0].should.equal("odpt.RailDirection:TokyoMetro.Ogikubo");
+      res[1].should.equal("odpt.RailDirection:TokyoMetro.Ikebukuro");
+      res[2].should.equal("odpt.RailDirection:TokyoMetro.Honancho");
+      done();
+    });
+  });
+});
+
+describe('GET /api/tokyometro/stations/raildirection/odpt.Station:TokyoMetro.Marunouchi.NakanoSakaue',
+  function() {
+  it('should respond with JSON array', function(done) {
+    request(app)
+      .get('/api/tokyometro/stations/raildirection/odpt.Station:TokyoMetro.Marunouchi.NakanoSakaue')
+      .expect(200)
+      .expect('Content-Type', /json/)
+      .end(function(err, res) {
+        if (err) return done(err);
+        var body = res.body;
+        body.should.be.instanceof(Array)
+        body.length.should.equal(3);
+        body[0].should.equal("odpt.RailDirection:TokyoMetro.Ogikubo");
+        body[1].should.equal("odpt.RailDirection:TokyoMetro.Ikebukuro");
+        body[2].should.equal("odpt.RailDirection:TokyoMetro.Honancho");
+        done();
+      });
+  });
+});
