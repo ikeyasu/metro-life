@@ -46,7 +46,20 @@ describe('/api/train/train.model#requestTrainsNearBy', function() {
       should.not.exist(err);
       res.should.be.instanceof(Object)
       if (config.usingMock) {
-        res["odpt.Station:TokyoMetro.Tozai.Nakano"].length.should.equal(2);
+        var toNakano = res["odpt.Station:TokyoMetro.Tozai.Nakano"];
+        toNakano.length.should.equal(3);
+        toNakano[0]["odpt:fromStation"].should.equal("odpt.Station:TokyoMetro.Tozai.BarakiNakayama");
+        toNakano[0]["odpt:toStation"].should.equal("odpt.Station:TokyoMetro.Tozai.Myoden");
+        toNakano[1]["odpt:fromStation"].should.equal("odpt.Station:TokyoMetro.Tozai.NishiFunabashi");
+        toNakano[1]["odpt:toStation"].should.equal("null");
+        toNakano[2]["odpt:fromStation"].should.equal("odpt.Station:TokyoMetro.Tozai.NishiFunabashi");
+        toNakano[2]["odpt:toStation"].should.equal("odpt.Station:TokyoMetro.Tozai.BarakiNakayama");
+        var toNishiFuna = res["odpt.Station:TokyoMetro.Tozai.NishiFunabashi"];
+        toNakano.length.should.equal(3);
+        toNishiFuna[0]["odpt:fromStation"].should.equal("odpt.Station:TokyoMetro.Tozai.Kasai");
+        toNishiFuna[0]["odpt:toStation"].should.equal("null");
+        toNishiFuna[1]["odpt:fromStation"].should.equal("odpt.Station:TokyoMetro.Tozai.MinamiSunamachi");
+        toNishiFuna[1]["odpt:toStation"].should.equal("null");
       }
       res["odpt.Station:TokyoMetro.Tozai.Nakano"].forEach(function(trains) {
         trains.forEach(function(train) {
