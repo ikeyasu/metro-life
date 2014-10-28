@@ -2,7 +2,6 @@
 
 var _ = require('lodash');
 var Tokyometro = require("../tokyometro.model");
-var LENGTH_NEAR_BY = 5;
 
 exports.requestStationsNearBy = function(station, railway, callback) {
   Tokyometro.requestStationsFromRailway(railway, function(err, res) {
@@ -17,12 +16,10 @@ exports.requestStationsNearBy = function(station, railway, callback) {
     var dest1 =  stations[0] ["odpt:station"];
     var dest2 =  stations[stations.length - 1] ["odpt:station"];
     var result = {};
-    var startIndex = Math.max(index - LENGTH_NEAR_BY, 0);
-    result[dest2] = stations.slice(startIndex, index).map(function(x) {
+    result[dest2] = stations.slice(0, index).map(function(x) {
       return x["odpt:station"];
     }).reverse();
-    var endIndex = Math.min(stations.length, index + LENGTH_NEAR_BY + 1);
-    result[dest1] = stations.slice(index + 1, endIndex).map(function(x) {
+    result[dest1] = stations.slice(index + 1, stations.length).map(function(x) {
       return x["odpt:station"];
     });
     callback(null, result);
