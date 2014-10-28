@@ -30,7 +30,7 @@ describe('/api/station/station.model#requestStationsNearBy', function() {
       should.not.exist(err);
       res.should.be.instanceof(Object)
       res["odpt.Station:TokyoMetro.Tozai.Nakano"].length.should.equal(5);
-      res["odpt.Station:TokyoMetro.Tozai.NishiFunabashi"].length.should.equal(5);
+      res["odpt.Station:TokyoMetro.Tozai.NishiFunabashi"].length.should.equal(17);
 
       res["odpt.Station:TokyoMetro.Tozai.NishiFunabashi"][0]
         .should.equal("odpt.Station:TokyoMetro.Tozai.Kasai");
@@ -76,7 +76,7 @@ describe('GET /api/tokyometro/stations/nearby/odpt.Station:TokyoMetro.Tozai.Uray
         var body = res.body;
         body.should.be.instanceof(Object)
         body["odpt.Station:TokyoMetro.Tozai.Nakano"].length.should.equal(5);
-        body["odpt.Station:TokyoMetro.Tozai.NishiFunabashi"].length.should.equal(5);
+        body["odpt.Station:TokyoMetro.Tozai.NishiFunabashi"].length.should.equal(17);
 
         body["odpt.Station:TokyoMetro.Tozai.NishiFunabashi"][0]
           .should.equal("odpt.Station:TokyoMetro.Tozai.Kasai");

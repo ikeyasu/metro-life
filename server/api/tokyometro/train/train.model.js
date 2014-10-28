@@ -12,10 +12,7 @@ exports.requestTrainsNearBy = function(station, railway, callback) {
     Station.requestStationsNearBy(station, railway, function(err, stations) {
       for (var dest in stations) {
         stations[dest] = stations[dest].reduce(function (prev, cur, index) {
-          var nearTrains = findTrainsAtStation(cur, dest, allTrains);
-          if (nearTrains.length > 0)
-            prev.push(nearTrains);
-          return prev;
+          return prev.concat(findTrainsAtStation(cur, dest, allTrains));
         }, []);
       }
       callback(undefined, stations);
@@ -29,7 +26,13 @@ function findTrainsAtStation(station, destStation, trains) {
         cur["odpt:railDirection"] === Station.convertToRailDirection(destStation))
       prev.push(cur);
     return prev
-  }, []);
+  }, [])
+  .sort(function(a, b) {
+    if (a["odpt:toStation"] === b["odpt:toStation"]) return 0
+    if (a["odpt:toStation"] === null) return -1;
+    if (b["odpt:toStation"] === null) return 1;
+    throw new Error("can never get here.");
+  });
 }
 
 var TrainTimetableSchema = new Schema({

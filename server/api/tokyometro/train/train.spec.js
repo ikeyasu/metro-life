@@ -46,17 +46,26 @@ describe('/api/train/train.model#requestTrainsNearBy', function() {
       should.not.exist(err);
       res.should.be.instanceof(Object)
       if (config.usingMock) {
-        res["odpt.Station:TokyoMetro.Tozai.Nakano"].length.should.equal(2);
+        var toNakano = res["odpt.Station:TokyoMetro.Tozai.Nakano"];
+        toNakano.length.should.equal(3);
+        toNakano[0]["odpt:fromStation"].should.equal("odpt.Station:TokyoMetro.Tozai.BarakiNakayama");
+        toNakano[0]["odpt:toStation"].should.equal("odpt.Station:TokyoMetro.Tozai.Myoden");
+        toNakano[1]["odpt:fromStation"].should.equal("odpt.Station:TokyoMetro.Tozai.NishiFunabashi");
+        should.not.exist(toNakano[1]["odpt:toStation"]);
+        toNakano[2]["odpt:fromStation"].should.equal("odpt.Station:TokyoMetro.Tozai.NishiFunabashi");
+        toNakano[2]["odpt:toStation"].should.equal("odpt.Station:TokyoMetro.Tozai.BarakiNakayama");
+        var toNishiFuna = res["odpt.Station:TokyoMetro.Tozai.NishiFunabashi"];
+        toNishiFuna.length.should.equal(8);
+        toNishiFuna[0]["odpt:fromStation"].should.equal("odpt.Station:TokyoMetro.Tozai.Kasai");
+        should.not.exist(toNishiFuna[0]["odpt:toStation"]);
+        toNishiFuna[1]["odpt:fromStation"].should.equal("odpt.Station:TokyoMetro.Tozai.MinamiSunamachi");
+        should.not.exist(toNishiFuna[1]["odpt:toStation"]);
       }
-      res["odpt.Station:TokyoMetro.Tozai.Nakano"].forEach(function(trains) {
-        trains.forEach(function(train) {
-          train["odpt:railDirection"].should.equal("odpt.RailDirection:TokyoMetro.Nakano");
-        });
+      res["odpt.Station:TokyoMetro.Tozai.Nakano"].forEach(function(train) {
+        train["odpt:railDirection"].should.equal("odpt.RailDirection:TokyoMetro.Nakano");
       });
-      res["odpt.Station:TokyoMetro.Tozai.NishiFunabashi"].forEach(function(trains) {
-        trains.forEach(function(train) {
-          train["odpt:railDirection"].should.equal("odpt.RailDirection:TokyoMetro.NishiFunabashi");
-        });
+      res["odpt.Station:TokyoMetro.Tozai.NishiFunabashi"].forEach(function(train) {
+        train["odpt:railDirection"].should.equal("odpt.RailDirection:TokyoMetro.NishiFunabashi");
       });
       done();
     });
