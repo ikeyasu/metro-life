@@ -52,10 +52,13 @@ exports.nearby = function(req, res) {
 
 // Get train's timetable
 exports.timetable = function(req, res) {
-  Train.TrainTimetable.findOne({trainNumber: req.params.trainNumber},
-  function(err, doc){
-    if (err) return res.send(500, err);
-    return res.json(200, JSON.parse(doc.json));
+  Tokyometro.request({
+    "rdf:type": "odpt:TrainTimetable",
+    "odpt:trainNumber": req.params.trainNumber
+  }, function(err, json){
+    if(err) { return handleError(res, err); }
+    if(!json) { return res.send(404); }
+    return res.json(json[0]);
   });
 };
 

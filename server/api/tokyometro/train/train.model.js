@@ -35,9 +35,3 @@ function findTrainsAtStation(station, destStation, trains) {
   });
 }
 
-var TrainTimetableSchema = new Schema({
-  trainNumber: String,
-  json: String
-});
-
-exports.TrainTimetable = mongoose.model('TrainTimetable', TrainTimetableSchema);
