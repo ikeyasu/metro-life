@@ -123,10 +123,3 @@ function callbackAsError(callback) {
   callback(true, null);
 }
 
-var ImportLogSchema = new Schema({
-  tableName: String,
-  source: String,
-  updated: Date
-});
-
-exports.ImportLog = mongoose.model('ImportLog', ImportLogSchema);
