@@ -13,6 +13,8 @@ var mongoose = require('mongoose'),
 var memjs = require('memjs');
 
 var DEFAULT_REQUEST_FREQUENCY = 90; //sec
+var MAX_RETRY = 10;
+var RETRY_INTERVAL = 110; //msec
 
 if (process.env.MEMCACHEDCLOUD_SERVERS) {
   var client = memjs.Client.create(
@@ -24,7 +26,7 @@ if (process.env.MEMCACHEDCLOUD_SERVERS) {
   var client = memjs.Client.create();
 }
 
-function requestJsonOrGetCache(url, callback, frequencyResolver) {
+function requestJsonOrGetCache(url, callback, frequencyResolver, counter) {
   client.get(url, function(err, val) {
     if (val) {
       callback(null, JSON.parse(val.toString()));
@@ -36,7 +38,15 @@ function requestJsonOrGetCache(url, callback, frequencyResolver) {
       }
 
       if (/application\/json/.exec(response.headers["content-type"]) === null) {
-        callback(true, null);
+        setTimeout(function() {
+          if (counter === undefined)
+            counter = 0;
+          if (counter >= MAX_RETRY) {
+            callback(true, null);
+            return;
+          }
+          requestJsonOrGetCache(url, callback, frequencyResolver, counter);
+        }, RETRY_INTERVAL);
         return;
       }
 
@@ -85,6 +95,9 @@ exports.request = function(param, callback) {
 }
 
 function frequencyResolver(json) {
+  if (json["@context"] === "https://vocab.tokyometroapp.jp/context_odpt_TrainTimetable.jsonld")
+    return 86400; // 1 day
+
   return json.reduce(
       function(prev, cur) {
         if (cur["odpt:frequency"])

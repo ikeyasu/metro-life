@@ -89,7 +89,8 @@ function() {
 
 describe('GET /api/tokyometro/trains/timetable/A0819',
 function() {
-  it('should respond with JSON array', function(done) {
+  it('should respond with JSON array and try to get at sametime', function(done) {
+    var countdown = 2;
     request(app)
       .get('/api/tokyometro/trains/timetable/A0819')
       .expect(200)
@@ -98,7 +99,19 @@ function() {
         if (err) return done(err);
         res.body.should.be.instanceof(Object);
         res.body["odpt:trainNumber"].should.equal("A0819");
-        done();
+        countdown--;
+        if (countdown === 0) done();
+      });
+    request(app)
+      .get('/api/tokyometro/trains/timetable/A1658T ')
+      .expect(200)
+      .expect('Content-Type', /json/)
+      .end(function(err, res) {
+        if (err) return done(err);
+        res.body.should.be.instanceof(Object);
+        res.body["odpt:trainNumber"].should.equal("A1658T");
+        countdown--;
+        if (countdown === 0) done();
       });
   });
 });
