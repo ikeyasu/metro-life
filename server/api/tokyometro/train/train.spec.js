@@ -55,7 +55,7 @@ describe('/api/train/train.model#requestTrainsNearBy', function() {
         toNakano[2]["odpt:fromStation"].should.equal("odpt.Station:TokyoMetro.Tozai.NishiFunabashi");
         toNakano[2]["odpt:toStation"].should.equal("odpt.Station:TokyoMetro.Tozai.BarakiNakayama");
         var toNishiFuna = res["odpt.Station:TokyoMetro.Tozai.NishiFunabashi"];
-        toNakano.length.should.equal(3);
+        toNishiFuna.length.should.equal(8);
         toNishiFuna[0]["odpt:fromStation"].should.equal("odpt.Station:TokyoMetro.Tozai.Kasai");
         should.not.exist(toNishiFuna[0]["odpt:toStation"]);
         toNishiFuna[1]["odpt:fromStation"].should.equal("odpt.Station:TokyoMetro.Tozai.MinamiSunamachi");
