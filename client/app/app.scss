@@ -6,6 +6,7 @@ $fa-font-path: "/bower_components/font-awesome/fonts";
 
 // Component styles are injected through grunt
 // injector
+@import 'app1.scss';
 @import 'main/main.scss';
 // endinjector
 
@@ -71,15 +72,21 @@ body{
     opacity:0.6;
     padding:5px 0;
 }
+$circle:260px;
+.circle-wrap{
+    position:relative;
+    height:360px;
+}
 .circle{
-    background-image:url("./images/noise.png");
-    border:15px solid rgba(0,0,0,0.2);
+    background-image:url("main/images/noise.png");
+    border:10px solid rgba(0,0,0,0.2);
     border-radius:130px;
     box-shadow: 0 0 1px 1px #16B0D1 inset;
-    height:260px;
-    margin:50px auto;
+    height:$circle;
+    margin:50px 120px;
+    position:absolute;
 	text-align:center;
-    width:260px;
+    width:$circle;
     .time{
     	color:rgba(255,255,255,0.8);
     	font-size:70px;
@@ -91,55 +98,92 @@ body{
     }
 }
 
+.dot-wrap{
+    border:10px solid rgba(0,0,0,0);
+    margin:50px 120px;
+    height:$circle;
+    width:$circle;
+    position:absolute;
+    border-radius:130px;
+}
 .dot{
     position:absolute;
+    left:120px;
+    top:-4px;
     border-radius:20px;
-    .blue{
-	    background-color:#5AD3F2;
-	    height:20px;
-	    width:20px;
-	}
-	.yellow{
-	    background-color:#EAB847;
-	    height:20px;
-	    width:20px;
-	}
-	.red{
-	    background-color:#EC5757;
-	    height:20px;
-	    width:20px;
-	}
+}
+.dot.normal{
+    background-color:#5AD3F2;
+    height:10px;
+    width:10px;
+}
+.dot.delay{
+    background-color:#EAB847;
+    height:10px;
+    width:10px;
+}
+.dot.red{
+    background-color:#EC5757;
+    height:10px;
+    width:10px;
 }
 
 .dot.selected{
-    width:25px!important;
-    height:25px!important;
+    width:20px!important;
+    height:20px!important;
 }
 .bar-wrap{
 	position:relative;
+    height:56px;
 }
 .bar {
-    line-height:24px;
-    padding:8px;
+    border-bottom-right-radius: 25px;
+    border-top-right-radius: 25px;
     display:block;
     float:none;
-    position:absolute;
+    height:40px;
+    line-height:24px;
+    position:relative;
+    padding:2px;
     .train-type{
+        border-radius:5px;
+        color:#fff;
     	left:0;
+        margin: 4px 0 4px 10px;
     	position:absolute;
+        padding:2px 4px;
     }
+    .train-type.normal{background-color:transparent;}
+    .train-type.rapid{background-color:#2AB841;}
     .time-to-station{
-    	right:0;
+        background-color:rgba(0,0,0,0.1);
+        border-radius:25px;
+        font-size:24px;
+        letter-spacing:2px;
+        margin-right:2px;
+        padding:6px 16px;
     	position:absolute;
+        right:0;
+    }
+    .delayed-time{
+        right:0;
+        position:absolute;
     }
     .bg-line{
+        border-top:2px solid rgba(0,0,255,0.6);
+        border-bottom:2px solid rgba(0,0,255,0.6);
+        height:1px;
     	position:absolute;
     	width:100%;
+        z-index:100;
     }
 }
+.bar.normal{background-color:#6AD7F3;}
+.bar.delay{background-color:#EAB847;}
 
 nav{
 	display:table;
+    table-layout:fixed;
 	position:relative;
 	width:100%;
 }

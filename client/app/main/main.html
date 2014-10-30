@@ -7,47 +7,68 @@
 </header> -->
 <div class="wrapper">
     <div class="head">
-        <div class="text">駅名 行き先</div>
+        <div class="text">{{currentStation}} : {{destination}}</div>
     </div>
-
-    <div class="">
+{{endTime}}<br>
+    <div class="circle-wrap">
         <div class="circle">
-            <div class="time">00:00</div>
-            <div class="status">status</div>
+            <div class="time">{{timeToCurrentStation}}</div>
+            <div class="status">{{delayStatus}}</div>
         </div>
 
-        <div class="dot"></div>
+        <div class="dot-wrap" ng-style="{'transform': train.dotRotate}" ng-repeat="train in nearbyTrainList">
+            <div class="dot {{train.delayStatus_Css}}"></div>
+        </div>
 
     </div>
-    <div class="">
+
+    <div class="list" ng-repeat="train in nearbyTrainList">
         <div class="bar-wrap">
-            <div class="content bar">
-                <div class="train-type">trainType</div>
-                <div class="time-to-station">TimeToThisStation</div>
+            <div class="content bar {{train.delayStatus_Css}}" ng-style="{{train.barWidth}}">
+                <div class="train-type {{train.trainType_Css}}">{{train.trainType}}</div>
+                <div class="time-to-station">{{train.timeToCurrentStation}}</div>
             </div>
-            <div class="delayed-time">delayedTime</div>
+            <div class="delayed-time">{{train.delay}}</div>
             <div class="bg-line"></div>
         </div>
     </div>
-    <nav>
-        <div id="" class="menu">
-            <div id="selected-station" class="inner">浦安駅</div>
+
+    <!-- <div class="list" ng-repeat="train in nearby['odpt.Station:TokyoMetro.Tozai.NishiFunabashi']">
+        <div class="bar-wrap">
+            <div class="content bar">
+                <div class="train-type">{{trainType}}</div>
+                <div class="time-to-station">{{TimeToThisStation}}</div>
+            </div>
+            <div class="delayed-time hide">{{train[0]["odpt:delay"]}}</div>
+            <div class="bg-line"></div>
         </div>
-        <div id="" class="menu">
-            <div id="selected-destination" class="inner">中野行</div>
-        </div>
-    </nav>
+    </div> -->
+    <!--<div  ng-repeat="train in neaby['odpt.Station:TokyoMetro.Tozai.NishiFunabashi']">
+        {{train['odpt.Station:TokyoMetro.Tozai.NishiFunabashi'][0][0]["odpt:fromStation"]}}
+        
+    </div> -->
     <div class="">
       <div class="row">
         <div class="col-sx-12">
-          <ul class="nav nav-tabs nav-stacked col-sm-6" ng-repeat="train in trains">
-            <li><a href="#" tooltip="{{train['odpt:fromStation']}}">{{train['odpt:fromStation']}} : {{train['odpt:delay']}}</a><br><br>
-    <a href="#" tooltip="{{train['odpt:fromStation']}}">{{train['odpt:toStation']}} : {{train['odpt:delay']}}</a>
+          <ul class="nav nav-tabs nav-stacked col-sm-12">
+            <li ng-repeat="train in trains">
+                <a href="#"  style="color:red" tooltip="{{train['odpt:fromStation']}}">{{train['odpt:fromStation']}} : {{train['odpt:delay']}}</a>
+                <a href="#" tooltip="{{train['odpt:fromStation']}}">{{train['odpt:toStation']}} : {{train['odpt:delay']}}</a>
             </li>
           </ul>
         </div>
       </div>
     </div>
+    <nav>
+        <div id="" class="menu">
+            <div id="selected-station" class="inner">{{currentStation}}</div>
+        </div>
+        <div id="" class="menu">
+            <div id="selected-destination" class="inner">
+                <select ng-model="selectedDirection" ng-options="direction.direction for direction in directions"></select>
+            </div>
+        </div>
+    </nav>
 </div>
 
 
