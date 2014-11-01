@@ -12,7 +12,10 @@ angular.module('metroLifeApp')
       $scope.trains = trains;
     });
 
-    $scope.currentStation = 'odpt.Station:TokyoMetro.Tozai.Urayasu';
+    requestJapaneseStationName('odpt.Station:TokyoMetro.Tozai.Urayasu')
+      .then(function(name) {
+        $scope.currentStation = name;
+      });
     $scope.endTime = 30;
     $scope.destination = '中野行';
     $scope.timeToCurrentStation = '10:12';
@@ -49,7 +52,7 @@ angular.module('metroLifeApp')
           dotRotate: 'rotate(300deg)',
           rotate: 30
         };
-        getDepatureTime(item.trainNumber)
+        requestDepatureTime(item.trainNumber)
           .then(function(time) {
             item.timeTable = time;
             var miriSec = (new Date((new Date()).toDateString() + ' ' + time) - new Date()) + item.delay;
@@ -69,7 +72,7 @@ angular.module('metroLifeApp')
       });
     });
 
-    function getDepatureTime(trainNum) {
+    function requestDepatureTime(trainNum) {
       var deferred = $q.defer();
       $http.get('/api/tokyometro/trains/timetable/' + trainNum)
         .then(function(data) {
@@ -84,6 +87,19 @@ angular.module('metroLifeApp')
           }, null);
           if (time) {
             deferred.resolve(time);
+          } else {
+            deferred.reject(null);
+          }
+        });
+      return deferred.promise;
+    }
+
+    function requestJapaneseStationName(station) {
+      var deferred = $q.defer();
+      $http.get('/api/tokyometro/stations/' + station)
+        .then(function(data) {
+          if (data.data) {
+            deferred.resolve(data.data[0]["dc:title"]);
           } else {
             deferred.reject(null);
           }
