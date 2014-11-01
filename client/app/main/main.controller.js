@@ -3,6 +3,11 @@
 angular.module('metroLifeApp')
   .controller('MainCtrl', function($scope, $http, $q) {
 
+    // filter
+    $scope.in30mins = function(input) {
+      return parseInt(input.timeToCurrentStation) <= 30;
+    };
+
     $http.get('/api/tokyometro/trains/delayed').success(function(trains) {
       $scope.trains = trains;
     });
