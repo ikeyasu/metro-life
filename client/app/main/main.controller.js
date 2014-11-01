@@ -8,6 +8,19 @@ angular.module('metroLifeApp')
       return parseInt(input.timeToCurrentStation) <= 30;
     };
 
+    function requestJapaneseStationName(station) {
+      var deferred = $q.defer();
+      $http.get('/api/tokyometro/stations/' + station)
+        .then(function(data) {
+          if (data.data) {
+            deferred.resolve(data.data[0]['dc:title']);
+          } else {
+            deferred.reject(null);
+          }
+        });
+      return deferred.promise;
+    }
+
     $http.get('/api/tokyometro/trains/delayed').success(function(trains) {
       $scope.trains = trains;
     });
@@ -87,19 +100,6 @@ angular.module('metroLifeApp')
           }, null);
           if (time) {
             deferred.resolve(time);
-          } else {
-            deferred.reject(null);
-          }
-        });
-      return deferred.promise;
-    }
-
-    function requestJapaneseStationName(station) {
-      var deferred = $q.defer();
-      $http.get('/api/tokyometro/stations/' + station)
-        .then(function(data) {
-          if (data.data) {
-            deferred.resolve(data.data[0]["dc:title"]);
           } else {
             deferred.reject(null);
           }
