@@ -1,5 +1,5 @@
 <!-- <div ng-include="'components/navbar/navbar.html'"></div> -->
-<!-- 
+<!--
 <header class="hero-unit" id="banner">
   <div class="container">
     <h1>Metro Life</h1>
@@ -17,15 +17,15 @@
         </div>
 
         <div class="dot-wrap" ng-style="{'transform': train.dotRotate}" ng-repeat="train in nearbyTrainList">
-            <div class="dot {{train.delayStatus_Css}}"></div>
+            <div class="dot {{train.delayStatusCss}}"></div>
         </div>
 
     </div>
 
     <div class="list" ng-repeat="train in nearbyTrainList">
         <div class="bar-wrap">
-            <div class="content bar {{train.delayStatus_Css}}" ng-style="{{train.barWidth}}">
-                <div class="train-type {{train.trainType_Css}}">{{train.trainType}}</div>
+            <div class="content bar {{train.delayStatusCss}}" ng-style="{{train.barWidth}}">
+                <div class="train-type {{train.trainTypeCss}}">{{train.trainType}}</div>
                 <div class="time-to-station">{{train.timeToCurrentStation}}</div>
             </div>
             <div class="delayed-time">{{train.delay}}</div>
@@ -45,7 +45,7 @@
     </div> -->
     <!--<div  ng-repeat="train in neaby['odpt.Station:TokyoMetro.Tozai.NishiFunabashi']">
         {{train['odpt.Station:TokyoMetro.Tozai.NishiFunabashi'][0][0]["odpt:fromStation"]}}
-        
+
     </div> -->
     <div class="">
       <div class="row">
