@@ -1,13 +1,11 @@
 'use strict';
 
 angular.module('metroLifeApp')
-  .controller('MainCtrl', function ($scope, $http) {
-    $scope.awesomeThings = [];
+  .controller('MainCtrl', function($scope, $http, $q) {
 
-    $http.get('/api/tokyometro/trains/delayed').success(function (trains) {
+    $http.get('/api/tokyometro/trains/delayed').success(function(trains) {
       $scope.trains = trains;
     });
-
 
     $scope.currentStation = 'odpt.Station:TokyoMetro.Tozai.Urayasu';
     $scope.endTime = 30;
@@ -22,105 +20,69 @@ angular.module('metroLifeApp')
     }];
     $scope.selectedDirection = $scope.directions[0];
 
+    $scope.nearbyTrainList = [];
 
-    var nearbyTrainList = [];
-      var promise = $http.get('/api/tokyometro/trains/nearby/odpt.Station:TokyoMetro.Tozai.Urayasu');
-      promise.then(function (data) {
+    $http.get('/api/tokyometro/trains/nearby/odpt.Station:TokyoMetro.Tozai.Urayasu').
+    then(function(data) {
+      var downDirection = data.data['odpt.Station:TokyoMetro.Tozai.NishiFunabashi'];
+      _(downDirection).forEach(function(train) {
+        var item = {
+          fromStation: train['odpt:fromStation'],
+          delay: train['odpt:delay'],
+          delayStatusCss: train['odpt:delay'] === 0 ? 'normal' : 'delay',
+          trainNumber: train['odpt:trainNumber'],
+          timeTable: '',
+          trainType: train['odpt:trainType'] === 'odpt.TrainType:TokyoMetro.Local' ? '普通' : '快速',
+          trainTypeCss: train['odpt:trainType'].indexOf('ocal') > -1 ? 'local' : 'rapid',
+          timeToCurrentStation: '',
+          barWidth: {
+            'width': ''
+          },
+          dotPosition: {
+            'transform': ''
+          },
+          dotRotate: 'rotate(300deg)',
+          rotate: 30
+        };
+        getDepatureTime(item.trainNumber)
+          .then(function(time) {
+            item.timeTable = time;
+            var miriSec = (new Date((new Date()).toDateString() + ' ' + time) - new Date()) + item.delay;
+            var seconds = Math.floor((miriSec / 1000) % 60);
+            var minutes = Math.floor(((miriSec / 1000) - seconds) / 60);
 
-          var nearby = data.data;
-          var ge = nearby['odpt.Station:TokyoMetro.Tozai.NishiFunabashi'];
-
-          for (var i = 0; i < ge.length; i++) {
-            nearbyTrainList.push({
-              fromStation: ge[i]['odpt:fromStation'],
-              delay: ge[i]['odpt:delay'],
-              delayStatusCss: ge[i]['odpt:delay'] === 0 ? 'normal' : 'delay',
-              trainNumber: ge[i]['odpt:trainNumber'],
-              timeTable: '',
-              trainType: ge[i]['odpt:trainType'] === 'odpt.TrainType:TokyoMetro.Local' ? '普通' : '快速',
-              trainTypeCss: ge[i]['odpt:trainType'].indexOf('ocal') > -1 ? 'local' : 'rapid',
-              timeToCurrentStation: '',
-              barWidth: {
-                'width': ''
-              },
-              dotPosition: {
-                'transform': ''
-              },
-              dotRotate: 'rotate(300deg)',
-              rotate: 30
-            });
-            getTimeTable(ge[i]['odpt:trainNumber']);
-          }
-        })
-        .then(function () {
-          console.log(nearbyTrainList);
-
-          $scope.nearbyTrainList = nearbyTrainList;
-
-          setInterval(function () {
-            for (var i = 0; i < nearbyTrainList.length; i++) {
-
-              nearbyTrainList[i].rotate -= (1 / 360);
-              nearbyTrainList[i].dotRotate =
-                'rotate(' + nearbyTrainList[i].rotate + 'deg)';
-
-              $scope.$apply();
-            }
-
-
-          }, 100);
-
-        });
-
-    function getTimeTable(trainNum) {
-
-      var promise = $http.get('/api/tokyometro/trains/timetable/' + trainNum);
-      promise.then(function (data) {
-
-        var trainTimeTable = data.data;
-        var table = trainTimeTable['odpt:holidays'] ? trainTimeTable['odpt:holidays'] : trainTimeTable['odpt:weekdays'];
-
-
-        var time, departureTime, departureStation;
-
-        for (var i = 0; i < table.length; i++) {
-          departureStation = table[i]['odpt:departureStation'];
-          departureTime = table[i]['odpt:departureTime'];
-          if (departureStation === 'odpt.Station:TokyoMetro.Tozai.Urayasu') {
-            time = departureTime;
-          }
-        }
-
-        for (var j = 0; j < nearbyTrainList.length; j++) {
-          var miriSec, seconds, minutes;
-          if (nearbyTrainList[j].trainNumber === trainNum) {
-            nearbyTrainList[j].timeTable = time;
-            miriSec = (new Date((new Date()).toDateString() + ' ' + time) - new Date()) + nearbyTrainList[j].delay;
-            seconds = Math.floor((miriSec / 1000) % 60);
-            minutes = Math.floor(((miriSec / 1000) - seconds) / 60);
-
-            //リミットを超える電車を配列から削除
-            if (minutes >= $scope.endTime) {
-              delete nearbyTrainList[j];
-            } else {
-              nearbyTrainList[j].timeToCurrentStation = minutes + ':' + seconds;
-            }
+            item.timeToCurrentStation = minutes + ':' + seconds;
 
             var pers = miriSec / ($scope.endTime * 60 * 1000);
-            nearbyTrainList[j].defaultPersent = pers;
-            nearbyTrainList[j].barWidth = {
+            item.barWidth = {
               'width': (1 - pers) * 100 + '%'
             };
-            nearbyTrainList[j].dotRotate = 'rotate(' + (360 * pers) + 'deg)';
-            nearbyTrainList[j].rotate = 360 * pers;
-            console.log(j);
-
-
-          }
-        }
-
+            item.dotRotate = 'rotate(' + (360 * pers) + 'deg)';
+            item.rotate = 360 * pers;
+          });
+        $scope.nearbyTrainList.push(item);
       });
+    });
+
+    function getDepatureTime(trainNum) {
+      var deferred = $q.defer();
+      $http.get('/api/tokyometro/trains/timetable/' + trainNum)
+        .then(function(data) {
+          var timetables = data.data;
+          var table = timetables['odpt:holidays'] ? timetables['odpt:holidays'] : timetables['odpt:weekdays'];
+
+          var time = _(table).reduce(function(prev, cur) {
+            if (cur['odpt:departureStation'] === 'odpt.Station:TokyoMetro.Tozai.Urayasu') {
+              return cur['odpt:departureTime'];
+            }
+            return prev;
+          }, null);
+          if (time) {
+            deferred.resolve(time);
+          } else {
+            deferred.reject(null);
+          }
+        });
+      return deferred.promise;
     }
-
-
   });
