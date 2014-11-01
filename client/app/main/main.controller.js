@@ -9,56 +9,11 @@ angular.module('metroLifeApp')
     });
 
 
-    var nearbyTrainList = {
-      0: {
-        station: '行徳',
-        delay: 100,
-        delayStatusCss: 'normal',
-        timeTable: '17:00',
-        trainType: '普通',
-        trainTypeCss: 'normal',
-        timeToCurrentStation: '10:12',
-        barWidth: {
-          'width': '70%'
-        },
-        dotPosition: {
-          'transform': 'rotate(10deg)'
-        },
-        dotRotate: 'rotate(100deg)', //初期値
-        rotate: 10
-      },
-      1: {
-        station: '妙典',
-        delay: 110,
-        delayStatusCss: 'delay',
-        timeTable: '17:25',
-        trainType: '快速',
-        trainTypeCss: 'rapid',
-        timeToCurrentStation: '14:48',
-        barWidth: {
-          'width': '40%'
-        },
-        dotPosition: {
-          'transform': 'rotate(40deg)'
-        },
-        dotRotate: 'rotate(300deg)',
-        rotate: 30
-      }
-    };
     $scope.currentStation = 'odpt.Station:TokyoMetro.Tozai.Urayasu';
     $scope.endTime = 30;
     $scope.destination = '中野行';
     $scope.timeToCurrentStation = '10:12';
     $scope.delayStatus = '通常運行';
-    $scope.trainType = nearbyTrainList.trainType;
-
-
-
-    //列車が後何分でつくか
-
-    //残り時間による円軌道上のポジション
-
-    //
 
     $scope.directions = [{
       direction: '上り'
@@ -68,8 +23,7 @@ angular.module('metroLifeApp')
     $scope.selectedDirection = $scope.directions[0];
 
 
-    nearbyTrainList = [];
-    setTimeout(function () {
+    var nearbyTrainList = [];
       var promise = $http.get('/api/tokyometro/trains/nearby/odpt.Station:TokyoMetro.Tozai.Urayasu');
       promise.then(function (data) {
 
@@ -117,7 +71,6 @@ angular.module('metroLifeApp')
           }, 100);
 
         });
-    }, 200);
 
     function getTimeTable(trainNum) {
 
