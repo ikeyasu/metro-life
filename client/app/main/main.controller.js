@@ -31,8 +31,7 @@ angular.module('metroLifeApp')
       });
     $scope.endTime = 30;
     $scope.destination = '中野行';
-    $scope.timeToCurrentStation = '10:12';
-    $scope.delayStatus = '通常運行';
+    $scope.delayStatus = '平常運行';
 
     $scope.directions = [{
       direction: '上り'
@@ -50,7 +49,8 @@ angular.module('metroLifeApp')
         var item = {
           fromStation: train['odpt:fromStation'],
           delay: train['odpt:delay'],
-          delayStatusCss: train['odpt:delay'] === 0 ? 'normal' : 'delay',
+          delayStatus: train['odpt:delay'] !== 0 ? true : false,
+          delayStatusCopy: train['odpt:delay'] === 0 ? '平常運行' : parseInt(train['odpt:delay']/60)+'分遅れ',
           trainNumber: train['odpt:trainNumber'],
           timeTable: '',
           trainType: train['odpt:trainType'] === 'odpt.TrainType:TokyoMetro.Local' ? '普通' : '快速',
@@ -69,14 +69,14 @@ angular.module('metroLifeApp')
           .then(function(time) {
             item.timeTable = time;
             var miriSec = (new Date((new Date()).toDateString() + ' ' + time) - new Date()) + item.delay;
+            miriSec = miriSec > 0 ? miriSec : 0;
             var seconds = Math.floor((miriSec / 1000) % 60);
             var minutes = Math.floor(((miriSec / 1000) - seconds) / 60);
-
             item.timeToCurrentStation = minutes + ':' + seconds;
 
             var pers = miriSec / ($scope.endTime * 60 * 1000);
             item.barWidth = {
-              'width': (1 - pers) * 100 + '%'
+              'width': 30 + (1 - pers) * 60 + '%'
             };
             item.dotRotate = 'rotate(' + (360 * pers) + 'deg)';
             item.rotate = 360 * pers;

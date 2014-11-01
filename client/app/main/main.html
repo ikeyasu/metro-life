@@ -2,27 +2,29 @@
     <div class="head">
         <div class="text">{{currentStation}} : {{destination}}</div>
     </div>
-    {{endTime}}<br>
     <div class="circle-wrap">
         <div class="circle">
-            <div class="time">{{timeToCurrentStation}}</div>
-            <div class="status">{{delayStatus}}</div>
+            <div class="time">{{nearbyTrainList[0]['timeToCurrentStation']}}</div>
+            <div class="status">{{nearbyTrainList[0]['delayStatusCopy']}}</div>
         </div>
 
         <div class="dot-wrap" ng-style="{'transform': train.dotRotate}" ng-repeat="train in nearbyTrainList | filter:in30mins">
-            <div class="dot {{train.delayStatusCss}}"></div>
+            <div class="dot {{train.delayStatus}}"></div>
         </div>
 
     </div>
 
-    <div class="list" ng-repeat="train in nearbyTrainList | filter:in30mins">
+    <div class="list" ng-repeat="train in nearbyTrainList | filter:in30mins ">
         <div class="bar-wrap">
-            <div class="content bar {{train.delayStatusCss}}" ng-style="{{train.barWidth}}">
+            <div class="content bar {{train.delayStatus}}" ng-style="{{train.barWidth}}">
                 <div class="train-type {{train.trainTypeCss}}">{{train.trainType}}</div>
                 <div class="time-to-station">{{train.timeToCurrentStation}}</div>
             </div>
-            <div class="delayed-time">{{train.delay}}</div>
+            <div class="delayed-time" ng-show="train.delayStatus">
+                {{train.delayStatusCopy}}
+            </div>
             <div class="bg-line"></div>
+            <div class="bg-right-circle"></div>
         </div>
     </div>
 
