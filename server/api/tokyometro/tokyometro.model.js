@@ -3,7 +3,9 @@
 var ACCESS_TOKEN = process.env.TOKYOMETRO_ACCESS_TOKEN;
 var BASE_URL = "https://api.tokyometroapp.jp/api/v2/datapoints";
 
+var _ = require('lodash');
 var request = require('request');
+var Q = require('q');
 var querystring = require('querystring');
 var config = require('../../config/environment');
 
@@ -29,11 +31,11 @@ if (process.env.MEMCACHEDCLOUD_SERVERS) {
 function requestJsonOrGetCache(url, callback, frequencyResolver, counter) {
   client.get(url, function(err, val) {
     if (val) {
-      callback(null, JSON.parse(val.toString()));
+      runCallback(callback, JSON.parse(val.toString()));
       return;
     }
     request(url, function(error, response, body) {
-      if (error) {
+      if (error && _.isFunction(callback)) {
         callback(error, body);
       }
 
@@ -42,7 +44,7 @@ function requestJsonOrGetCache(url, callback, frequencyResolver, counter) {
           if (counter === undefined)
             counter = 0;
           if (counter >= MAX_RETRY) {
-            callback(true, null);
+            callbackAsError(callback);
             return;
           }
           requestJsonOrGetCache(url, callback, frequencyResolver, counter);
@@ -55,7 +57,7 @@ function requestJsonOrGetCache(url, callback, frequencyResolver, counter) {
 
       client.set(url, body, function(err, val) {
         // ignore error of memcache because callback must be called anytime.
-        callback(error, json);
+        if (_.isFunction(callback)) callback(error, json);
       }, frequency);
     });
   });
@@ -65,9 +67,8 @@ exports.requestJsonOrGetCache = requestJsonOrGetCache;
 exports.request = function(param, callback) {
   if (!param)
     throw("Specify a param argument.");
-  if (!callback)
-    throw("Specify a callback argument.");
 
+  var deferred = Q.defer();
 
   if (config.usingMock) {
     var mock = require("./tokyometro.mock");
@@ -76,8 +77,11 @@ exports.request = function(param, callback) {
     if (!data) {
       console.log("Cannot find mock data: " + querystring.stringify(param));
     }
-    callback(null, data);
-    return;
+    runCallback(callback, data);
+    setTimeout(function() {
+      deferred.resolve(data);
+    }, 0);
+    return deferred.promise;
   }
 
   param["acl:consumerKey"] = ACCESS_TOKEN;
@@ -86,12 +90,19 @@ exports.request = function(param, callback) {
           function (error, json) {
     if (error) {
       callbackAsError(callback);
+      setTimeout(function() {
+        deferred.reject(null);
+      }, 0);
       return;
     }
 
     // ignore error of memcache because callback must be called anytime.
-    callback(null, json);
+    runCallback(callback, json);
+    setTimeout(function() {
+      deferred.resolve(json);
+    }, 0);
   }, frequencyResolver);
+  return deferred.promise;
 }
 
 function frequencyResolver(json) {
@@ -119,7 +130,11 @@ exports.requestStationsFromRailway = function(railway, callback) {
   return exports.request({"rdf:type": "odpt:Railway", "owl:sameAs": railway}, callback);
 }
 
+function runCallback(callback, res) {
+  if (_.isFunction(callback)) callback(null, res);
+}
+
 function callbackAsError(callback) {
-  callback(true, null);
+  if (_.isFunction(callback)) callback(true, null);
 }
 

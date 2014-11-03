@@ -16,6 +16,13 @@ describe('/api/tokyometro.model#request', function() {
       done();
     });
   });
+  it('should works with promise', function(done) {
+    Tokyometro.request({"rdf:type": "odpt:Train"}).then(function(res) {
+      res.should.be.instanceof(Array)
+      res[0]["@context"].should.equal("http://vocab.tokyometroapp.jp/context_odpt_Train.jsonld");
+      done();
+    });
+  });
 });
 
 describe('/api/tokyometro.model#requestTrains', function() {
