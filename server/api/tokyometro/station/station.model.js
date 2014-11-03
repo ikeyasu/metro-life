@@ -10,7 +10,9 @@ exports.request = function(station, callback) {
 
 exports.convertToJapaneseName = function(station) {
   var stationIndex = _(StationTable.data).findIndex(function(s) {
-    return s["owl:sameAs"] === station;
+    var splittedTarget = station.split(/[.:]/);
+    var splitted = s["owl:sameAs"].split(/[.:]/);
+    return splitted[4] === splittedTarget[4];
   });
   return StationTable.data[stationIndex]["dc:title"];
 };
@@ -40,18 +42,31 @@ exports.requestStationsNearBy = function(station, railway, callback) {
 
 
 exports.requestRailDirection = function(station, callback) {
-  Tokyometro.request({"rdf:type": "odpt:StationTimetable", "odpt:station": station},
-      function(err, res) {
-        callback(null, _.uniq(res.reduce(function(prev, cur) {
-          prev.push(cur["odpt:railDirection"]);
-          return prev;
-        }, [])));
-      });
+  Tokyometro.request({"rdf:type": "odpt:StationTimetable", "odpt:station": station})
+    .then(function(res) {
+      callback(null, _.uniq(res.reduce(function(prev, cur) {
+        prev.push({
+          "odpt:railDirection": cur["odpt:railDirection"],
+          'dc:title': exports.convertToJapaneseName(
+              exports.convertRailDirectionToTerminalStation(
+                cur["odpt:railDirection"], station))
+        });
+        return prev;
+      }, [])));
+    });
 };
 
 exports.convertToRailway = function(station) {
   var splitted = station.split(/[.:]/)
   return splitted[0] + "." + "Railway:" + splitted[2] + "." + splitted[3];
+}
+
+exports.convertRailDirectionToTerminalStation = function(raildirection, station) {
+  // odpt.RailDirection:TokyoMetro.Nakano and odpt.Station:TokyoMetro.Tozai.Urayasu
+  // => odpt.Station:TokyoMetro.Tozai.Nakano
+  var splittedStation = station.split(/[.:]/)
+  var splittedRaildirection = raildirection.split(/[.:]/)
+  return splittedStation[0] + "." + "Station:" + splittedStation[2] + "." + splittedStation[3] + "." + splittedRaildirection[3];
 }
 
 exports.convertToRailDirection = function(station) {

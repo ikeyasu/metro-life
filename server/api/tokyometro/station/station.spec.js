@@ -123,9 +123,12 @@ describe('/api/station/station.model#requestRailDirection', function() {
       should.not.exist(err);
       res.should.be.instanceof(Array);
       res.length.should.equal(3);
-      res[0].should.equal("odpt.RailDirection:TokyoMetro.Ogikubo");
-      res[1].should.equal("odpt.RailDirection:TokyoMetro.Ikebukuro");
-      res[2].should.equal("odpt.RailDirection:TokyoMetro.Honancho");
+      res[0]['odpt:railDirection'].should.equal("odpt.RailDirection:TokyoMetro.Ogikubo");
+      res[0]['dc:title'].should.equal("荻窪");
+      res[1]['odpt:railDirection'].should.equal("odpt.RailDirection:TokyoMetro.Ikebukuro");
+      res[1]['dc:title'].should.equal("池袋");
+      res[2]['odpt:railDirection'].should.equal("odpt.RailDirection:TokyoMetro.Honancho");
+      res[2]['dc:title'].should.equal("方南町");
       done();
     });
   });
@@ -143,9 +146,12 @@ describe('GET /api/tokyometro/stations/raildirection/odpt.Station:TokyoMetro.Mar
         var body = res.body;
         body.should.be.instanceof(Array)
         body.length.should.equal(3);
-        body[0].should.equal("odpt.RailDirection:TokyoMetro.Ogikubo");
-        body[1].should.equal("odpt.RailDirection:TokyoMetro.Ikebukuro");
-        body[2].should.equal("odpt.RailDirection:TokyoMetro.Honancho");
+        body[0]['odpt:railDirection'].should.equal("odpt.RailDirection:TokyoMetro.Ogikubo");
+        body[0]['dc:title'].should.equal("荻窪");
+        body[1]['odpt:railDirection'].should.equal("odpt.RailDirection:TokyoMetro.Ikebukuro");
+        body[1]['dc:title'].should.equal("池袋");
+        body[2]['odpt:railDirection'].should.equal("odpt.RailDirection:TokyoMetro.Honancho");
+        body[2]['dc:title'].should.equal("方南町");
         done();
       });
   });

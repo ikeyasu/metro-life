@@ -33,12 +33,7 @@ angular.module('metroLifeApp')
     $scope.destination = '中野行';
     $scope.delayStatus = '平常運行';
 
-    $scope.directions = [{
-      direction: '上り'
-    }, {
-      direction: '下り'
-    }];
-    $scope.selectedDirection = $scope.directions[0];
+    $scope.directions = [];
 
     $scope.nearbyTrainList = [];
 
@@ -90,6 +85,18 @@ angular.module('metroLifeApp')
       .then(function(data) {
         $scope.railways = data.data;
       });
+
+    $scope.showDestinationMenu = function(event) {
+      if (!$scope.selectedStation) return;
+      if ($scope.currentStationModel === $scope.selectedStation)
+        return;
+      $scope.currentStationModel = $scope.selectedStation;
+      var station = $scope.currentStationModel["odpt:station"];
+      $http.get('/api/tokyometro/stations/raildirection/' + station)
+        .then(function(data) {
+          $scope.directions = data.data;
+        });
+    };
 
     function requestDepatureTime(trainNum) {
       var deferred = $q.defer();
