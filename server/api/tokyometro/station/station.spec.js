@@ -5,6 +5,28 @@ var app = require('../../../app');
 var request = require('supertest');
 var Station = require('./station.model');
 
+describe('/api/tokyometro/station#convertToJapaneseName', function() {
+  it('should respond with AoyamaIchome', function(done) {
+    var station = Station.convertToJapaneseName("odpt.Station:TokyoMetro.Ginza.AoyamaItchome");
+    station.should.equal("青山一丁目");
+    station = Station.convertToJapaneseName("odpt.Station:TokyoMetro.MarunouchiBranch.Honancho");
+    station.should.equal("方南町");
+    done();
+  });
+});
+
+describe('/api/tokyometro/station#request', function() {
+  it('should respond with JSON array and AoyamaIchome', function(done) {
+    Station.request("odpt.Station:TokyoMetro.Ginza.AoyamaItchome")
+      .then(function(res) {
+        res.should.be.instanceof(Array);
+        res[0]["@context"].should.equal("http://vocab.tokyometroapp.jp/context_odpt_Station.jsonld");
+        res[0]["dc:title"].should.equal("青山一丁目");
+        done();
+      });
+  });
+});
+
 describe('GET /api/tokyometro/stations/odpt.Station:TokyoMetro.Ginza.AoyamaItchome', function() {
   it('should respond with JSON array', function(done) {
     request(app)

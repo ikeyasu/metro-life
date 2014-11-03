@@ -2,6 +2,18 @@
 
 var _ = require('lodash');
 var Tokyometro = require("../tokyometro.model");
+var StationTable = require("../../../config/data/stations.20141103");
+
+exports.request = function(station, callback) {
+  return Tokyometro.request({"rdf:type": "odpt:Station", "owl:sameAs": station}, callback);
+};
+
+exports.convertToJapaneseName = function(station) {
+  var stationIndex = _(StationTable.data).findIndex(function(s) {
+    return s["owl:sameAs"] === station;
+  });
+  return StationTable.data[stationIndex]["dc:title"];
+};
 
 exports.requestStationsNearBy = function(station, railway, callback) {
   Tokyometro.requestStationsFromRailway(railway, function(err, res) {

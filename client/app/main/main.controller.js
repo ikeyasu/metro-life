@@ -85,6 +85,12 @@ angular.module('metroLifeApp')
       });
     });
 
+    $scope.railways = [];
+    $http.get('/api/tokyometro/railways')
+      .then(function(data) {
+        $scope.railways = data.data;
+      });
+
     function requestDepatureTime(trainNum) {
       var deferred = $q.defer();
       $http.get('/api/tokyometro/trains/timetable/' + trainNum)

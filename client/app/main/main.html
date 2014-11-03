@@ -42,11 +42,18 @@
     </div>
     <nav>
         <div id="" class="menu">
-            <div id="selected-station" class="inner">{{currentStation}}</div>
+          <div id="selected-railway" class="inner">
+            <select class="selectpicker" style="color:black" ng-model="selectedRailway" ng-options="railway['dc:title'] for railway in railways"></select>
+          </div>
+        </div>
+        <div id="" class="menu">
+          <div id="selected-station" class="inner">
+            <select class="selectpicker" style="color:black" ng-model="selectedStation" ng-options="station['dc:title'] for station in selectedRailway['odpt:stationOrder']"></select>
+          </div>
         </div>
         <div id="" class="menu">
             <div id="selected-destination" class="inner">
-                <select ng-model="selectedDirection" ng-options="direction.direction for direction in directions"></select>
+                <select class="selectpicker" style="color:black" ng-model="selectedDirection" ng-options="direction.direction for direction in directions"></select>
             </div>
         </div>
     </nav>
