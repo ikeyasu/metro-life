@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('metroLifeApp')
-  .controller('MainCtrl', function($scope, $http, $q) {
+  .controller('MainCtrl', function($scope, $http, $q, $interval) {
 
     // filter
     $scope.in30mins = function(input) {
@@ -29,16 +29,14 @@ angular.module('metroLifeApp')
       .then(function(name) {
         $scope.currentStation = name;
       });
-    $scope.endTime = 30;
-    $scope.destination = '中野行';
-    $scope.delayStatus = '平常運行';
 
     $scope.directions = [];
+	var endTime = 30;
 
     $scope.nearbyTrainList = [];
 
-    $http.get('/api/tokyometro/trains/nearby/odpt.Station:TokyoMetro.Tozai.Urayasu').
-    then(function(data) {
+    $http.get('/api/tokyometro/trains/nearby/odpt.Station:TokyoMetro.Tozai.Urayasu')
+    .then(function(data) {
       var downDirection = data.data['odpt.Station:TokyoMetro.Tozai.NishiFunabashi'];
       _(downDirection).forEach(function(train) {
         var item = {
@@ -63,18 +61,52 @@ angular.module('metroLifeApp')
         requestDepatureTime(item.trainNumber)
           .then(function(time) {
             item.timeTable = time;
-            var miriSec = (new Date((new Date()).toDateString() + ' ' + time) - new Date()) + item.delay;
+            var miriSec = (new Date((new Date()).toDateString() + ' ' + time) - new Date()) + (item.delay * 1000);
             miriSec = miriSec > 0 ? miriSec : 0;
+            var pers = miriSec / ( endTime * 60 * 1000);
+        	var prgsPerSec = 10 / 30 / 60;
             var seconds = Math.floor((miriSec / 1000) % 60);
             var minutes = Math.floor(((miriSec / 1000) - seconds) / 60);
-            item.timeToCurrentStation = minutes + ':' + seconds;
 
-            var pers = miriSec / ($scope.endTime * 60 * 1000);
-            item.barWidth = {
-              'width': 30 + (1 - pers) * 60 + '%'
-            };
-            item.dotRotate = 'rotate(' + (360 * pers) + 'deg)';
-            item.rotate = 360 * pers;
+            countdown();
+            progress();
+
+			setInterval(function() {
+			  	$scope.$apply(countdown);
+			  	$scope.$apply(progress);
+			}, 1000);
+
+            function countdown(){
+            	minutes = parseInt(minutes);
+            	seconds = parseInt(seconds);
+            	if(seconds === 0 && minutes === 0){
+            		minutes; seconds;
+            	}else if (seconds === 0){
+            		minutes--;
+            		seconds = 59;
+            	}else{
+            		seconds--;
+            	}
+            	minutes = minutes + "";
+            	seconds = seconds + "";
+            	if(minutes < 10 && minutes.length === 1)minutes = "0" + minutes;
+            	if(seconds < 10 && seconds.length === 1)seconds = "0" + seconds;
+            	item.timeToCurrentStation = minutes + ':' + seconds;
+            }
+            function progress(){
+            	console.log(pers)
+            	if (pers <= 0){
+            		pers = 0;
+            	}else{
+            		pers -= prgsPerSec;
+            	}
+	            item.barWidth = {
+	              'width': 30 + (1 - pers) * 60 + '%'
+	            };
+	            console.log(item.barWidth);
+	            item.dotRotate = 'rotate(' + (360 * pers) + 'deg)';
+	            item.rotate = 360 * pers;
+            }
           });
         $scope.nearbyTrainList.push(item);
       });
@@ -102,21 +134,26 @@ angular.module('metroLifeApp')
       var deferred = $q.defer();
       $http.get('/api/tokyometro/trains/timetable/' + trainNum)
         .then(function(data) {
-          var timetables = data.data;
-          var table = timetables['odpt:holidays'] ? timetables['odpt:holidays'] : timetables['odpt:weekdays'];
+			var timetables = data.data;
+			var table = timetables['odpt:holidays'] ? timetables['odpt:holidays'] : timetables['odpt:weekdays'];
 
-          var time = _(table).reduce(function(prev, cur) {
-            if (cur['odpt:departureStation'] === 'odpt.Station:TokyoMetro.Tozai.Urayasu') {
-              return cur['odpt:departureTime'];
-            }
-            return prev;
-          }, null);
-          if (time) {
-            deferred.resolve(time);
-          } else {
-            deferred.reject(null);
-          }
-        });
+			var time = _(table).reduce(function(prev, cur) {
+			if (cur['odpt:departureStation'] === 'odpt.Station:TokyoMetro.Tozai.Urayasu') {
+				return cur['odpt:departureTime'];
+			}
+				return prev;
+			}, null);
+			if (time) {
+				deferred.resolve(time);
+			} else {
+				deferred.reject(null);
+			}
+        })
+        .then(function(){
+			$scope.nearbyTrainList = _.chain($scope.nearbyTrainList)
+				.sortBy(function(key) {return parseInt(key.timeToCurrentStation);})
+				.value();
+		});
       return deferred.promise;
     }
   });

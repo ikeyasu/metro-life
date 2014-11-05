@@ -3,6 +3,7 @@ $fa-font-path: "/bower_components/font-awesome/fonts";
 
 @import 'bootstrap-sass-official/vendor/assets/stylesheets/bootstrap';
 @import 'font-awesome/scss/font-awesome';
+@import url(http://fonts.googleapis.com/css?family=Share+Tech);
 
 // Component styles are injected through grunt
 // injector
@@ -80,7 +81,7 @@ $circle:260px;
     background-image:url("main/images/noise.png");
     border:10px solid rgba(0,0,0,0.2);
     border-radius:130px;
-    box-shadow: 0 0 1px 1px #16B0D1 inset;
+    box-shadow: 0 0 1px 1px #16B0D1 inset, 0 2px 8px 1px #000 inset;
     height:$circle;
     margin:50px 120px;
     position:absolute;
@@ -88,8 +89,10 @@ $circle:260px;
     width:$circle;
     .time{
     	color:rgba(255,255,255,0.8);
-    	font-size:70px;
+        font-family: 'Share Tech', sans-serif;
+    	font-size:80px;
     	margin-top:60px;
+        text-shadow:0 4px 8px #000;
     }
     .status{
     	color:rgba(255,255,255,0.15);
@@ -158,6 +161,7 @@ $circle:260px;
     .time-to-station{
         background-color:rgba(0,0,0,0.1);
         border-radius:25px;
+        font-family: 'Share Tech', sans-serif;
         font-size:24px;
         letter-spacing:2px;
         margin-right:2px;
@@ -179,17 +183,17 @@ $circle:260px;
     height:1px;
     position:absolute;
     top:18px;
-    width:87%;
+    width:85%;
     z-index:10;
 }
 .bg-right-circle{
     border:6px solid rgba(0,0,0,0.15);
     border-radius:20px;
-    height:40px;
-    left:87%;
+    height:30px;
+    left:85%;
     position:absolute;
-    top:0px;
-    width:40px;
+    top:5px;
+    width:30px;
     z-index:20;
 }
 .bar.false{background-color:#6AD7F3;}
@@ -202,6 +206,7 @@ nav{
 	width:100%;
 }
 .menu{
+    box-shadow:0 2px 1px #000 inset;
     color:rgba(255,255,255,0.6);
     display:table-cell;
     .inner{

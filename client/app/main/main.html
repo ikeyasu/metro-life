@@ -2,6 +2,7 @@
     <div class="head">
         <div class="text">{{currentStation}} : {{destination}}</div>
     </div>
+    {{TimeToCorrentStation}}
     <div class="circle-wrap">
         <div class="circle">
             <div class="time">{{nearbyTrainList[0]['timeToCurrentStation']}}</div>
@@ -26,19 +27,6 @@
             <div class="bg-line"></div>
             <div class="bg-right-circle"></div>
         </div>
-    </div>
-
-    <div class="">
-      <div class="row">
-        <div class="col-sx-12">
-          <ul class="nav nav-tabs nav-stacked col-sm-12">
-            <li ng-repeat="train in trains">
-                <a href="#"  style="color:red" tooltip="{{train['odpt:fromStation']}}">{{train['odpt:fromStation']}} : {{train['odpt:delay']}}</a>
-                <a href="#" tooltip="{{train['odpt:fromStation']}}">{{train['odpt:toStation']}} : {{train['odpt:delay']}}</a>
-            </li>
-          </ul>
-        </div>
-      </div>
     </div>
     <nav>
         <div id="" class="menu">
