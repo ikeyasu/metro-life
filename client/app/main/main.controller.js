@@ -51,7 +51,8 @@ angular.module('metroLifeApp')
               function countdown() {
                 minutes = parseInt(minutes);
                 seconds = parseInt(seconds);
-                if (seconds === 0) {
+                if (seconds === 0 && minutes === 0) {
+                } else if (seconds === 0) {
                   minutes--;
                   seconds = 59;
                 } else {
