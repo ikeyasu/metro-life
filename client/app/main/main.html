@@ -17,7 +17,7 @@
 
     <div class="list" ng-repeat="train in nearbyTrainList | filter:in30mins ">
         <div class="bar-wrap">
-            <div class="content bar {{train.delayStatus}}" ng-style="{{train.barWidth}}">
+            <div class="content bar {{train.delayStatus}}" style="width : {{train.barWidth.width}}">
                 <div class="train-type {{train.trainTypeCss}}">{{train.trainType}}</div>
                 <div class="time-to-station">{{train.timeToCurrentStation}}</div>
             </div>

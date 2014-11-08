@@ -31,7 +31,6 @@ angular.module('metroLifeApp')
       });
 
     $scope.directions = [];
-	var endTime = 30;
 
     $scope.nearbyTrainList = [];
 
@@ -41,6 +40,7 @@ angular.module('metroLifeApp')
       _(downDirection).forEach(function(train) {
         var item = {
           fromStation: train['odpt:fromStation'],
+          toStation:train['odpt:toStation'],
           delay: train['odpt:delay'],
           delayStatus: train['odpt:delay'] !== 0 ? true : false,
           delayStatusCopy: train['odpt:delay'] === 0 ? '平常運行' : parseInt(train['odpt:delay']/60)+'分遅れ',
@@ -52,10 +52,7 @@ angular.module('metroLifeApp')
           barWidth: {
             'width': ''
           },
-          dotPosition: {
-            'transform': ''
-          },
-          dotRotate: 'rotate(300deg)',
+          dotRotate: '',
           rotate: 30
         };
         requestDepatureTime(item.trainNumber)
@@ -63,8 +60,9 @@ angular.module('metroLifeApp')
             item.timeTable = time;
             var miriSec = (new Date((new Date()).toDateString() + ' ' + time) - new Date()) + (item.delay * 1000);
             miriSec = miriSec > 0 ? miriSec : 0;
-            var pers = miriSec / ( endTime * 60 * 1000);
-        	var prgsPerSec = 10 / 30 / 60;
+            var maximum = 30;//30min
+            var pers = miriSec / ( maximum * 60 * 1000);
+        	var prgsPerSec = 1 / 30 / 60; // 30分で１周
             var seconds = Math.floor((miriSec / 1000) % 60);
             var minutes = Math.floor(((miriSec / 1000) - seconds) / 60);
 
@@ -80,7 +78,10 @@ angular.module('metroLifeApp')
             	minutes = parseInt(minutes);
             	seconds = parseInt(seconds);
             	if(seconds === 0 && minutes === 0){
-            		minutes; seconds;
+            		$http.get('/api/tokyometro/trains/nearby/odpt.Station:TokyoMetro.Tozai.Urayasu').success(function(data) {
+				      	console.log(data);
+				    });
+
             	}else if (seconds === 0){
             		minutes--;
             		seconds = 59;
@@ -94,16 +95,12 @@ angular.module('metroLifeApp')
             	item.timeToCurrentStation = minutes + ':' + seconds;
             }
             function progress(){
-            	console.log(pers)
             	if (pers <= 0){
             		pers = 0;
             	}else{
             		pers -= prgsPerSec;
             	}
-	            item.barWidth = {
-	              'width': 30 + (1 - pers) * 60 + '%'
-	            };
-	            console.log(item.barWidth);
+	            item.barWidth.width = 30 + (1 - pers) * 60 + '%';
 	            item.dotRotate = 'rotate(' + (360 * pers) + 'deg)';
 	            item.rotate = 360 * pers;
             }
