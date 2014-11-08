@@ -8,29 +8,11 @@ angular.module('metroLifeApp')
       return parseInt(input.timeToCurrentStation) <= 30;
     };
 
-    function requestJapaneseStationName(station) {
-      var deferred = $q.defer();
-      $http.get('/api/tokyometro/stations/' + station)
-        .then(function(data) {
-          if (data.data) {
-            deferred.resolve(data.data[0]['dc:title']);
-          } else {
-            deferred.reject(null);
-          }
-        });
-      return deferred.promise;
-    }
-
     $http.get('/api/tokyometro/trains/delayed').success(function(trains) {
       $scope.trains = trains;
     });
 
-    requestJapaneseStationName('odpt.Station:TokyoMetro.Tozai.Urayasu')
-      .then(function(name) {
-        $scope.currentStation = name;
-      });
     $scope.endTime = 30;
-    $scope.destination = '中野行';
     $scope.delayStatus = '平常運行';
 
     $scope.directions = [];
@@ -84,17 +66,33 @@ angular.module('metroLifeApp')
     $http.get('/api/tokyometro/railways')
       .then(function(data) {
         $scope.railways = data.data;
+        var i = _.findIndex(data.data, function(railway) {
+          return railway['owl:sameAs'] === 'odpt.Railway:TokyoMetro.Tozai';
+        });
+        $scope.selectedRailway = data.data[i];
+
+        i = _.findIndex($scope.selectedRailway['odpt:stationOrder'], function(station) {
+          return station['odpt:station'] === 'odpt.Station:TokyoMetro.Tozai.Urayasu';
+        });
+        $scope.selectedStation = $scope.selectedRailway['odpt:stationOrder'][i];
+        if ($scope.apply) { // On test mode, apply() does not exist.
+          $scope.apply();
+        }
       });
 
-    $scope.showDestinationMenu = function(event) {
-      if (!$scope.selectedStation) return;
-      if ($scope.currentStationModel === $scope.selectedStation)
+    $scope.showDirectionMenu = function() {
+      if (!$scope.selectedStation) {
         return;
+      }
+      if ($scope.currentStationModel === $scope.selectedStation) {
+        return;
+      }
       $scope.currentStationModel = $scope.selectedStation;
-      var station = $scope.currentStationModel["odpt:station"];
+      var station = $scope.currentStationModel['odpt:station'];
       $http.get('/api/tokyometro/stations/raildirection/' + station)
         .then(function(data) {
           $scope.directions = data.data;
+          $scope.selectedDirection = $scope.directions[0];
         });
     };
 
