@@ -14,8 +14,6 @@ describe('Controller: MainCtrl', function () {
     $httpBackend = _$httpBackend_;
     $httpBackend.expectGET('/api/tokyometro/trains/delayed')
       .respond([]);
-    $httpBackend.expectGET('/api/tokyometro/stations/odpt.Station:TokyoMetro.Tozai.Urayasu')
-      .respond([{'@id':'urn:ucode:_00001C000000000000010000030C46CC','@type':'odpt:Station','owl:sameAs':'odpt.Station:TokyoMetro.Tozai.Urayasu','dc:date':'2014-10-02T22:13:46+09:00','dc:title':'浦安','ug:region':'https://api.tokyometroapp.jp/api/v2/places/urn:ucode:_00001C000000000000010000030C46CC.geojson','odpt:operator':'odpt.Operator:TokyoMetro','odpt:railway':'odpt.Railway:TokyoMetro.Tozai','odpt:connectingRailway':[],'odpt:facility':'odpt.StationFacility:TokyoMetro.Urayasu','odpt:passengerSurvey':['odpt.PassengerSurvey:TokyoMetro.Urayasu.2013','odpt.PassengerSurvey:TokyoMetro.Urayasu.2012','odpt.PassengerSurvey:TokyoMetro.Urayasu.2011'],'odpt:stationCode':'T18','odpt:exit':['urn:ucode:_00001C000000000000010000030C448A'],'@context':'http://vocab.tokyometroapp.jp/context_odpt_Station.jsonld','geo:lat':35.6659023964693,'geo:long':139.893236272609}]);
     $httpBackend.expectGET('/api/tokyometro/trains/nearby/odpt.Station:TokyoMetro.Tozai.Urayasu')
       .respond({'odpt.Station:TokyoMetro.Tozai.NishiFunabashi':[{'@context':'http://vocab.tokyometroapp.jp/context_odpt_Train.jsonld','@type':'odpt:Train','@id':'urn:ucode:_00001C000000000000010000030CAB32','dc:date':'2014-11-01T16:01:50+09:00','dct:valid':'2014-11-01T16:03:20+09:00','odpt:frequency':90,'odpt:railway':'odpt.Railway:TokyoMetro.Tozai','owl:sameAs':'odpt.Train:TokyoMetro.Tozai.A1549S','odpt:trainNumber':'A1549S','odpt:trainType':'odpt.TrainType:TokyoMetro.Local','odpt:delay':0,'odpt:startingStation':'odpt.Station:JR-East.Chuo.Mitaka','odpt:terminalStation':'odpt.Station:TokyoMetro.Tozai.NishiFunabashi','odpt:fromStation':'odpt.Station:TokyoMetro.Tozai.Kasai','odpt:toStation':null,'odpt:railDirection':'odpt.RailDirection:TokyoMetro.NishiFunabashi','odpt:trainOwner':'odpt.TrainOwner:TokyoMetro'}]});
     $httpBackend.expectGET('/api/tokyometro/railways')
@@ -38,11 +36,6 @@ describe('Controller: MainCtrl', function () {
     $httpBackend.flush();
     expect(scope.nearbyTrainList).toBeDefined();
     expect(scope.nearbyTrainList[0].fromStation).toEqual('odpt.Station:TokyoMetro.Tozai.Kasai');
-  });
-
-  it('should attach a list of trains to the scope', function () {
-    $httpBackend.flush();
-    expect(scope.currentStation).toEqual('浦安');
   });
 
   it('should attach a list of trains to the scope', function () {

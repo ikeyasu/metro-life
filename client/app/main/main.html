@@ -1,6 +1,6 @@
 <div class="wrapper">
     <div class="head">
-        <div class="text">{{currentStation}} : {{destination}}</div>
+        <div class="text">{{selectedStation['dc:title']}} : {{selectedDirection['dc:title']}} 方面</div>
     </div>
     {{TimeToCorrentStation}}
     <div class="circle-wrap">
@@ -36,7 +36,7 @@
         </div>
         <div id="" class="menu">
           <div id="selected-station" class="inner">
-            <select class="selectpicker" style="color:black" ng-selected="showDestinationMenu()" ng-model="selectedStation" ng-options="station['dc:title'] for station in selectedRailway['odpt:stationOrder']"></select>
+            <select class="selectpicker" style="color:black" ng-selected="showDirectionMenu()" ng-model="selectedStation" ng-options="station['dc:title'] for station in selectedRailway['odpt:stationOrder']"></select>
           </div>
         </div>
         <div id="" class="menu">
