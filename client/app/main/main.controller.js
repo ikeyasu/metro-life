@@ -12,7 +12,6 @@ angular.module('metroLifeApp')
       $scope.trains = trains;
     });
 
-
     $scope.directions = [];
 
     $scope.nearbyTrainList = [];
@@ -61,9 +60,7 @@ angular.module('metroLifeApp')
             	minutes = parseInt(minutes);
             	seconds = parseInt(seconds);
             	if(seconds === 0 && minutes === 0){
-            		$http.get('/api/tokyometro/trains/nearby/odpt.Station:TokyoMetro.Tozai.Urayasu').success(function(data) {
-				      	console.log(data);
-				    });
+
 
             	}else if (seconds === 0){
             		minutes--;

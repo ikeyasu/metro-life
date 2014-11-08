@@ -213,9 +213,20 @@ nav{
     display:table-cell;
     .inner{
     	margin-right:1px;
-    	padding:20px 0;
     	text-align:center;
     	width:auto;
     	background-color:rgba(0,0,0,0.15);
     }
+}
+.selectpicker{
+    padding:20px 40px!important;
+    line-height:30px!important;
+    width:100%!important;
+    height:50px!important;
+    border:0px!important;
+    box-shadow:none!important;
+    border-radius:0px!important;
+    background-color:transparent!important;
+    color:#bbb!important;
+    white-space:20px!important;
 }
