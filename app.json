@@ -6,7 +6,7 @@
     "TOKYOMETRO_ACCESS_TOKEN": "{{Set your access token}}"
   },
   "addons": [
-    "memcachedcloud:25",
+    "memcachier:dev",
     "mongolab:sandbox"
   ]
 }
