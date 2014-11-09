@@ -12,14 +12,15 @@ angular.module('metroLifeApp')
       $scope.trains = trains;
     });
 
+    $scope.railways = [];
     $scope.directions = [];
-
     $scope.nearbyTrainList = [];
 
-    $http.get('/api/tokyometro/trains/nearby/odpt.Station:TokyoMetro.Tozai.Urayasu')
-
+    function setStationAndDirection(station, direction) {
+    $scope.nearbyTrainList = [];
+    $http.get('/api/tokyometro/trains/nearby/' + station)
       .then(function (data) {
-        var downDirection = data.data['odpt.Station:TokyoMetro.Tozai.NishiFunabashi'];
+        var downDirection = data.data[direction];
         _(downDirection).forEach(function (train) {
           var item = {
             fromStation: train['odpt:fromStation'],
@@ -92,8 +93,9 @@ angular.module('metroLifeApp')
           $scope.nearbyTrainList.push(item);
         });
       });
+    }
 
-    $scope.railways = [];
+    // set default station and direction
     $http.get('/api/tokyometro/railways')
       .then(function (data) {
         $scope.railways = data.data;
@@ -111,20 +113,32 @@ angular.module('metroLifeApp')
         }
       });
 
-    $scope.showDirectionMenu = function () {
+    $scope.onStationSelected = function () {
       if (!$scope.selectedStation) {
         return;
       }
-      if ($scope.currentStationModel === $scope.selectedStation) {
+      if ($scope.currentStation === $scope.selectedStation) {
         return;
       }
-      $scope.currentStationModel = $scope.selectedStation;
-      var station = $scope.currentStationModel['odpt:station'];
+      $scope.currentStation = $scope.selectedStation;
+      var station = $scope.currentStation['odpt:station'];
       $http.get('/api/tokyometro/stations/raildirection/' + station)
         .then(function (data) {
           $scope.directions = data.data;
           $scope.selectedDirection = $scope.directions[0];
         });
+    };
+
+    $scope.onDirectionSelected = function () {
+      if (!$scope.selectedDirection) {
+        return;
+      }
+      if ($scope.currentDirection === $scope.selectedDirection) {
+        return;
+      }
+      $scope.currentDirection = $scope.selectedDirection;
+      setStationAndDirection($scope.selectedStation['odpt:station'],
+          $scope.currentDirection['odpt:station']);
     };
 
     function requestDepatureTime(trainNum) {
@@ -135,7 +149,7 @@ angular.module('metroLifeApp')
           var table = timetables['odpt:holidays'] ? timetables['odpt:holidays'] : timetables['odpt:weekdays'];
 
           var time = _(table).reduce(function (prev, cur) {
-            if (cur['odpt:departureStation'] === 'odpt.Station:TokyoMetro.Tozai.Urayasu') {
+            if (cur['odpt:departureStation'] === $scope.currentStation['odpt:station']) {
               return cur['odpt:departureTime'];
             }
             return prev;
