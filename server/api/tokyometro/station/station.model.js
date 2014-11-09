@@ -45,11 +45,12 @@ exports.requestRailDirection = function(station, callback) {
   Tokyometro.request({"rdf:type": "odpt:StationTimetable", "odpt:station": station})
     .then(function(res) {
       callback(null, _.uniq(res.reduce(function(prev, cur) {
+        var terminalStation = exports.convertRailDirectionToTerminalStation(
+                cur["odpt:railDirection"], station)
         prev.push({
           "odpt:railDirection": cur["odpt:railDirection"],
-          'dc:title': exports.convertToJapaneseName(
-              exports.convertRailDirectionToTerminalStation(
-                cur["odpt:railDirection"], station))
+          "odpt:station": terminalStation,
+          'dc:title': exports.convertToJapaneseName(terminalStation)
         });
         return prev;
       }, [])));
