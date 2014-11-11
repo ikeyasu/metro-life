@@ -42,8 +42,11 @@ angular.module('metroLifeApp')
           requestDepatureTime(item.trainNumber)
             .then(function (time) {
               item.timeTable = time;
-              var miriSec = (new Date((new Date()).toDateString() + ' ' + time) - new Date()) + (item.delay * 1000);
-              miriSec = miriSec > 0 ? miriSec : 0;
+              var date = new Date();
+              var miriSec = (new Date((date).toDateString() + ' ' + time) - new Date()) + (item.delay * 1000);
+              miriSec = miriSec > 0 ? miriSec : function(){
+                return (new Date((new Date(date.getFullYear(),date.getMonth(),date.getDate()+1)).toDateString() + ' ' + time) - new Date()) + (item.delay * 1000);
+              };
               var maximum = 30; //30min
               var pers = miriSec / (maximum * 60 * 1000);
               var prgsPerSec = 1 / 30 / 60; // 30分で１周
@@ -69,7 +72,8 @@ angular.module('metroLifeApp')
                   seconds = '0' + seconds;
                 }
                 item.timeToCurrentStation = minutes + ':' + seconds;
-              }             var minutes = Math.floor(((miriSec / 1000) - seconds) / 60);
+              }             
+              var minutes = Math.floor(((miriSec / 1000) - seconds) / 60);
 
               function progress() {
                 if (pers <= 0) {
@@ -155,6 +159,7 @@ angular.module('metroLifeApp')
             return prev;
           }, null);
           if (time) {
+
             deferred.resolve(time);
           } else {
             deferred.reject(null);
