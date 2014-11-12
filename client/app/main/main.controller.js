@@ -43,14 +43,14 @@ angular.module('metroLifeApp')
             .then(function (time) {
               item.timeTable = time;
               var date = new Date();
-              var miriSec = (new Date((date).toDateString() + ' ' + time) - new Date()) + (item.delay * 1000);
-              miriSec = miriSec > 0 ? miriSec : function(){
+              var milliSec = (new Date((date).toDateString() + ' ' + time) - new Date()) + (item.delay * 1000);
+              milliSec = milliSec > 0 ? milliSec : function(){
                 return (new Date((new Date(date.getFullYear(),date.getMonth(),date.getDate()+1)).toDateString() + ' ' + time) - new Date()) + (item.delay * 1000);
               };
               var maximum = 30; //30min
-              var pers = miriSec / (maximum * 60 * 1000);
+              var pers = milliSec / (maximum * 60 * 1000);
               var prgsPerSec = 1 / 30 / 60; // 30分で１周
-              var seconds = Math.floor((miriSec / 1000) % 60);
+              var seconds = Math.floor((milliSec / 1000) % 60);
 
               function countdown() {
                 minutes = parseInt(minutes);
@@ -72,8 +72,8 @@ angular.module('metroLifeApp')
                   seconds = '0' + seconds;
                 }
                 item.timeToCurrentStation = minutes + ':' + seconds;
-              }             
-              var minutes = Math.floor(((miriSec / 1000) - seconds) / 60);
+              }
+              var minutes = Math.floor(((milliSec / 1000) - seconds) / 60);
 
               function progress() {
                 if (pers <= 0) {
