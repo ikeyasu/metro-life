@@ -2,6 +2,9 @@
 
 angular.module('metroLifeApp')
   .controller('MainCtrl', function ($scope, $http, $q) {
+    // When you use mock, please set 'usingMock:true,'
+    // in server/config/environment/development.js
+    var MOCK = false;
 
     // filter
     $scope.in30mins = function (input) {
@@ -39,13 +42,15 @@ angular.module('metroLifeApp')
             dotRotate: '',
             rotate: 30
           };
+          function now() {
+            return (MOCK === true) ? new Date('2014-10-19T16:31:45+09:00') : new Date();
+          }
           requestDepatureTime(item.trainNumber)
             .then(function (time) {
               item.timeTable = time;
-              var date = new Date();
-              var milliSec = (new Date((date).toDateString() + ' ' + time) - new Date()) + (item.delay * 1000);
+              var milliSec = (new Date(now().toDateString() + ' ' + time) - now()) + (item.delay * 1000);
               milliSec = milliSec > 0 ? milliSec : function(){
-                return (new Date((new Date(date.getFullYear(),date.getMonth(),date.getDate()+1)).toDateString() + ' ' + time) - new Date()) + (item.delay * 1000);
+                return (new Date((new Date(now().getFullYear(), now().getMonth(), now().getDate() + 1)).toDateString() + ' ' + time) - now()) + (item.delay * 1000);
               };
               var maximum = 30; //30min
               var pers = milliSec / (maximum * 60 * 1000);
