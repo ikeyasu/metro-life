@@ -6,6 +6,28 @@ angular.module('metroLifeApp')
     // in server/config/environment/development.js
     var MOCK = false;
 
+    function getNow() {
+      return (MOCK === true) ? new Date('2014-10-19T16:31:45+09:00') : new Date();
+    }
+    function getTommorow(now) {
+      now = now ? now : getNow();
+      return new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+    }
+    function getTimeLeftFromDayAndTrainTime(day, traintime, now) {
+      now = now ? now : getNow();
+      return (new Date(day.toDateString() + ' ' + traintime)) - now;
+    }
+    function getTimeLeft(traintime, now) {
+      now = now ? now : getNow();
+      var milliSec = getTimeLeftFromDayAndTrainTime(now, traintime, now);
+      if (milliSec < 0) {
+        // becoming tommorow
+        milliSec = getTimeLeftFromDayAndTrainTime(getTommorow(now), traintime, now);
+      }
+      return milliSec;
+    }
+    $scope.getTimeLeft = getTimeLeft; // for test
+
     // filter
     $scope.in30mins = function (input) {
       return parseInt(input.timeToCurrentStation) <= 30;
@@ -42,23 +64,10 @@ angular.module('metroLifeApp')
             dotRotate: '',
             rotate: 30
           };
-          function now() {
-            return (MOCK === true) ? new Date('2014-10-19T16:31:45+09:00') : new Date();
-          }
-          function tommorow() {
-            return new Date(now().getFullYear(), now().getMonth(), now().getDate() + 1);
-          }
-          function getTimeLeftFromDayAndTrainTime(day, traintime) {
-            return (new Date(day.toDateString() + ' ' + traintime)) - now();
-          }
           requestDepatureTime(item.trainNumber)
             .then(function (time) {
               item.timeTable = time;
-              var milliSec = getTimeLeftFromDayAndTrainTime(now(), time) + (item.delay * 1000);
-              if (milliSec < 0) {
-                // becoming tommorow
-                milliSec = getTimeLeftFromDayAndTrainTime(tommorow(), time) + (item.delay * 1000);
-              }
+              var milliSec = getTimeLeft(time) + (item.delay * 1000);
               var MAXIMUM_TIMELEFT = 30 * 1000; // Show upcoming trains in 30 mins (30,000 milli-sec)
               var PROGRESS_PER_SECOND = 1 / 30 / 60; // Go around on 30 mins
               var dotPosition = milliSec / (MAXIMUM_TIMELEFT * 60);
