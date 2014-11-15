@@ -45,15 +45,23 @@ angular.module('metroLifeApp')
           function now() {
             return (MOCK === true) ? new Date('2014-10-19T16:31:45+09:00') : new Date();
           }
+          function tommorow() {
+            return new Date(now().getFullYear(), now().getMonth(), now().getDate() + 1);
+          }
+          function getTimeLeftFromDayAndTrainTime(day, traintime) {
+            return (new Date(day.toDateString() + ' ' + traintime)) - now();
+          }
           requestDepatureTime(item.trainNumber)
             .then(function (time) {
               item.timeTable = time;
-              var milliSec = (new Date(now().toDateString() + ' ' + time) - now()) + (item.delay * 1000);
-              milliSec = milliSec > 0 ? milliSec :
-                (new Date((new Date(now().getFullYear(), now().getMonth(), now().getDate() + 1)).toDateString() + ' ' + time) - now()) + (item.delay * 1000);
-              var maximum = 30; //30min
-              var pers = milliSec / (maximum * 60 * 1000);
-              var prgsPerSec = 1 / 30 / 60; // 30分で１周
+              var milliSec = getTimeLeftFromDayAndTrainTime(now(), time) + (item.delay * 1000);
+              if (milliSec < 0) {
+                // becoming tommorow
+                milliSec = getTimeLeftFromDayAndTrainTime(tommorow(), time) + (item.delay * 1000);
+              }
+              var MAXIMUM_TIMELEFT = 30 * 1000; // Show upcoming trains in 30 mins (30,000 milli-sec)
+              var PROGRESS_PER_SECOND = 1 / 30 / 60; // Go around on 30 mins
+              var dotPosition = milliSec / (MAXIMUM_TIMELEFT * 60);
               var seconds = Math.floor((milliSec / 1000) % 60);
               var minutes = Math.floor(((milliSec / 1000) - seconds) / 60);
 
@@ -85,14 +93,14 @@ angular.module('metroLifeApp')
               }
 
               function progress() {
-                if (pers <= 0) {
-                  pers = 0;
+                if (dotPosition <= 0) {
+                  dotPosition = 0;
                 } else {
-                  pers -= prgsPerSec;
+                  dotPosition -= PROGRESS_PER_SECOND;
                 }
-                item.barWidth.width = 30 + (1 - pers) * 60 + '%';
-                item.dotRotate = 'rotate(' + (360 * pers) + 'deg)';
-                item.rotate = 360 * pers;
+                item.barWidth.width = 30 + (1 - dotPosition) * 60 + '%';
+                item.dotRotate = 'rotate(' + (360 * dotPosition) + 'deg)';
+                item.rotate = 360 * dotPosition;
               }
 
               countdown();
