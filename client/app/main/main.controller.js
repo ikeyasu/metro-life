@@ -49,19 +49,24 @@ angular.module('metroLifeApp')
             .then(function (time) {
               item.timeTable = time;
               var milliSec = (new Date(now().toDateString() + ' ' + time) - now()) + (item.delay * 1000);
-              milliSec = milliSec > 0 ? milliSec : function(){
-                return (new Date((new Date(now().getFullYear(), now().getMonth(), now().getDate() + 1)).toDateString() + ' ' + time) - now()) + (item.delay * 1000);
-              };
+              milliSec = milliSec > 0 ? milliSec :
+                (new Date((new Date(now().getFullYear(), now().getMonth(), now().getDate() + 1)).toDateString() + ' ' + time) - now()) + (item.delay * 1000);
               var maximum = 30; //30min
               var pers = milliSec / (maximum * 60 * 1000);
               var prgsPerSec = 1 / 30 / 60; // 30分で１周
               var seconds = Math.floor((milliSec / 1000) % 60);
+              var minutes = Math.floor(((milliSec / 1000) - seconds) / 60);
 
               function countdown() {
                 minutes = parseInt(minutes);
                 seconds = parseInt(seconds);
                 if (seconds === 0 && minutes === 0) {
-
+                  var i = _.findIndex($scope.nearbyTrainList, function (train) {
+                    return train === item;
+                  });
+                  if (i >= 0) {
+                    $scope.nearbyTrainList.splice(i, 1);
+                  }
                 } else if (seconds === 0) {
                   minutes--;
                   seconds = 59;
@@ -78,7 +83,6 @@ angular.module('metroLifeApp')
                 }
                 item.timeToCurrentStation = minutes + ':' + seconds;
               }
-              var minutes = Math.floor(((milliSec / 1000) - seconds) / 60);
 
               function progress() {
                 if (pers <= 0) {
