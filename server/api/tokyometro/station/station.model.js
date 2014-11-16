@@ -27,8 +27,13 @@ exports.requestStationsNearBy = function(station, railway, callback) {
       return prev;
     }, -1);
 
-    var dest1 =  stations[0] ["odpt:station"];
-    var dest2 =  stations[stations.length - 1] ["odpt:station"];
+    var isMarunouchi = false;
+    var dest1 =  stations[0]["odpt:station"];
+    var dest2 =  stations[stations.length - 1]["odpt:station"];
+    if (dest2 === "odpt.Station:TokyoMetro.MarunouchiBranch.NakanoSakaue") {
+      dest2 =  "odpt.Station:TokyoMetro.Marunouchi.Ikebukuro";
+      isMarunouchi = true;
+    }
     var result = {};
     result[dest2] = stations.slice(0, index).map(function(x) {
       return x["odpt:station"];
@@ -36,6 +41,9 @@ exports.requestStationsNearBy = function(station, railway, callback) {
     result[dest1] = stations.slice(index + 1, stations.length).map(function(x) {
       return x["odpt:station"];
     });
+    if (isMarunouchi) {
+      result[dest1] = result[dest1].concat(["odpt.Station:TokyoMetro.Marunouchi.NishiShinjuku","odpt.Station:TokyoMetro.Marunouchi.Shinjuku","odpt.Station:TokyoMetro.Marunouchi.ShinjukuSanchome","odpt.Station:TokyoMetro.Marunouchi.ShinjukuGyoemmae","odpt.Station:TokyoMetro.Marunouchi.YotsuyaSanchome","odpt.Station:TokyoMetro.Marunouchi.Yotsuya","odpt.Station:TokyoMetro.Marunouchi.AkasakaMitsuke","odpt.Station:TokyoMetro.Marunouchi.KokkaiGijidomae","odpt.Station:TokyoMetro.Marunouchi.Kasumigaseki","odpt.Station:TokyoMetro.Marunouchi.Ginza","odpt.Station:TokyoMetro.Marunouchi.Tokyo","odpt.Station:TokyoMetro.Marunouchi.Otemachi","odpt.Station:TokyoMetro.Marunouchi.Awajicho","odpt.Station:TokyoMetro.Marunouchi.Ochanomizu","odpt.Station:TokyoMetro.Marunouchi.HongoSanchome","odpt.Station:TokyoMetro.Marunouchi.Korakuen","odpt.Station:TokyoMetro.Marunouchi.Myogadani","odpt.Station:TokyoMetro.Marunouchi.ShinOtsuka","odpt.Station:TokyoMetro.Marunouchi.Ikebukuro"]);
+    }
     callback(null, result);
   });
 };
