@@ -46,16 +46,9 @@ angular.module('metroLifeApp')
     $scope.changeCenter = function (index){
       $scope.selectedTrain = index;
       $scope.selectedIndex = index;
-    }
+    };
 
-    function removeItem(item) {
-      var i = _.findIndex($scope.nearbyTrainList, function (train) {
-        return train === item;
-      });
-      if (i >= 0) {
-        $scope.nearbyTrainList.splice(i, 1);
-      }
-    }
+
     var timerIds = [];
 
     function setStationAndDirection(station, direction) {

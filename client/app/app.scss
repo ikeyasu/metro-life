@@ -49,7 +49,16 @@ $actionColor : #28C3F2;
 /**
  * App-wide Styles
  */
-
+.kurukuru{
+    bottom:80px;
+    color:rgba(0,0,0,0.2);
+    font-family: 'Share Tech', sans-serif;
+    font-size:32px;
+    margin:0 auto;
+    position:fixed;
+    text-align:center;
+    width:100%;
+}
 .browsehappy {
     margin: 0.2em 0;
     background: #ccc;
@@ -73,16 +82,16 @@ body{
     z-index:1;
 }
 
-.m{color:#D70016;}/*MarunouchiBranch*/
-.G{color:#FAA428;}/*Ginza*/
-.M{color:#D70016;}/*Marunouti*/
-.H{color:#8C9EA8;}/*Hibiya*/
-.T{color:#2595D2;}/*Tozai*/
-.C{color:#1C8A36;}/*Chiyoda*/
-.Y{color:#CBBA3C;}/*Yurakucho*/
-.Z{color:#8866A6;}/*Hanzomon*/
-.N{color:#239E98;}/*Nanboku*/
-.F{color:#A9521B;}/*Fukutoshin*/
+.m{color:#FF243A;}/*MarunouchiBranch*/
+.G{color:#FF9700;}/*Ginza*/
+.M{color:#FF243A;}/*Marunouti*/
+.H{color:#DFEDF5;}/*Hibiya*/
+.T{color:#00C5FF;}/*Tozai*/
+.C{color:#00CD30;}/*Chiyoda*/
+.Y{color:#F2D500;}/*Yurakucho*/
+.Z{color:#9926FF;}/*Hanzomon*/
+.N{color:#25E0D7;}/*Nanboku*/
+.F{color:#EC5B00;}/*Fukutoshin*/
 
 .head{
     background-color:rgba(0,0,0,0.15);
@@ -135,7 +144,7 @@ body{
     color:#000;
     font-family: 'PT Mono';
     font-weight:bold;
-    height: $circle/2+16;
+    height: $circle/2+20;
     left: 0;
     margin:-17px auto 0;
     opacity:0.8;
@@ -144,7 +153,7 @@ body{
     top: 0;
     transform-origin: bottom center;
     width:10px;
-    z-index:1100;
+    z-index:500;
 }
  
 .ab-n{transform:rotate(-5deg);}
@@ -164,19 +173,19 @@ body{
     color:#000;
     font-size:27px;
     line-height:0;
-    opacity:0.4;
+    opacity:0.6;
     height: $circle/2+15;
     position: absolute;
     left: 0;
     right: 0;
-    top: 0;
-    margin:-15px auto 0;
+    top: -15px;
+    margin:0 auto;
     transform-origin: bottom center;
     width:10px;
     z-index:500;
 }
 
-.ar1{transform:rotate(0deg);}
+.ar1{transform:rotate(0deg);color:#EC4478;opacity:1;}
 .ar2{transform:rotate(60deg);}
 .ar3{transform:rotate(120deg);}
 .ar4{transform:rotate(180deg);}
@@ -215,7 +224,7 @@ body{
     }
     .traintype.rapid{color:rgba(255,255,255,0.5);}
     .time{
-    	color:rgba(255,255,255,0.8);
+    	color:rgba(255,255,255,1);
         font-family: 'Share Tech', sans-serif;
     	font-size:80px;
         line-height:100px;
@@ -254,15 +263,15 @@ body{
     border-radius:20px;
     z-index:5000;
 }
-.dot.rapid{
-    background-color:#5BD362;
-    border:1px solid $mainColor;
-    box-shadow: 0 0 0 2px #1FA432;
-}
 .dot.false{
     background-color:$actionColor;
     height:24px;
     width:24px;
+}
+.dot.rapid{
+    background-color:$actionColor;
+    border:2px solid $mainColor;
+    box-shadow: 0 0 0 2px #1FA432;
 }
 .dot.true{
     background-color:#ECB144;
@@ -284,9 +293,9 @@ body{
     box-shadow:0 0 0 3px $actionColor;
 }
 
-.dot.active.rapid{
-    border:1px solid $mainColor;
-    box-shadow: 0 0 0 2px #1FA432;
+.dot.active.rapid{    
+    border:3px solid $mainColor;
+    box-shadow:0 0 0 3px #5FD07D;
 }
 
 
