@@ -52,12 +52,8 @@ angular.module('metroLifeApp')
         var downDirection = data.data[direction];
         _(downDirection).forEach(function (train) {
           var item = {
-            fromStation: train['odpt:fromStation'],
-            toStation: train['odpt:toStation'],
-            delay: train['odpt:delay'],
             delayStatus: train['odpt:delay'] !== 0 ? true : false,
             delayStatusCopy: train['odpt:delay'] === 0 ? '平常運行' : parseInt(train['odpt:delay'] / 60) + '分遅れ',
-            trainNumber: train['odpt:trainNumber'],
             dateObjToArrive: null,
             trainType: train['odpt:trainType'] === 'odpt.TrainType:TokyoMetro.Local' ? '普通' : '快速',
             trainTypeCss: train['odpt:trainType'].indexOf('ocal') > -1 ? 'local' : 'rapid',
@@ -66,7 +62,7 @@ angular.module('metroLifeApp')
             barWidth: 0,
             dotRotate: '',
           };
-          requestDepatureTime(item.trainNumber)
+          requestDepatureTime(train['owl:sameAs'])
             .then(function (time) {
               var MAXIMUM_TIMELEFT = 30 * 60; // Show upcoming trains in 30 mins (1800 sec)
               item.dateObjToArrive = getDateObjFromTimeString(time);
@@ -154,12 +150,17 @@ angular.module('metroLifeApp')
           $scope.currentDirection['odpt:station']);
     };
 
-    function requestDepatureTime(trainNum) {
+    function getDayType(date) {
+      date = date ? date : new Date();
+      var w = ['holidays','weekdays','weekdays','weekdays','weekdays','weekdays','saturdays'];
+      return w[date.getDay()];
+    }
+
+    function requestDepatureTime(train) {
       var deferred = $q.defer();
-      $http.get('/api/tokyometro/trains/timetable/' + trainNum)
+      $http.get('/api/tokyometro/trains/timetable/' + train + '/' + getDayType())
         .then(function (data) {
-          var timetables = data.data;
-          var table = timetables['odpt:holidays'] ? timetables['odpt:holidays'] : timetables['odpt:weekdays'];
+          var table = data.data;
 
           var time = _(table).reduce(function (prev, cur) {
             if (cur['odpt:departureStation'] === $scope.currentStation['odpt:station']) {
