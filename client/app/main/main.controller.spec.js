@@ -32,6 +32,9 @@ describe('Controller: MainCtrl', function () {
   });
 
   it('getDateObjFromTimeString tests', function () {
+    if ((new Date()).getTimezoneOffset() / 60 != -9) {
+      return;
+    }
     $httpBackend.flush();
     expect(scope.getDateObjFromTimeString('23:00', new Date('2014/11/15 22:59 GMT+0900'))).toEqual(new Date('2014/11/15 23:00 GMT+0900'));
     expect(scope.getDateObjFromTimeString('00:00', new Date('2014/11/16 00:00 GMT+0900'))).toEqual(new Date('2014/11/16 00:00 GMT+0900'));
