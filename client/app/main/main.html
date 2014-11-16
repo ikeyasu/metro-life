@@ -3,9 +3,6 @@
         <div class="text">{{currentStation['dc:title']}} : {{currentDirection['dc:title']}} 方面</div>
     </div>
     <div class="circle-wrap">
-        <div class="head">
-            <div class="text">{{selectedStation['dc:title']}} : {{selectedDirection['dc:title']}} 方面</div>
-        </div>
         <div class="circle">
             <div class="time">{{nearbyTrainList[0]['timeToCurrentStation']}}</div>
             <div class="status">{{nearbyTrainList[0]['delayStatusCopy']}}</div>
@@ -48,6 +45,12 @@
             </div>
         </div>
     </nav>
+
+    <div class="loading" ng-hide="loading">
+        <div class="spinner">
+            <i class="fa fa-spinner fa-spin"></i>
+        </div>
+    </div>
 </div>
 
 

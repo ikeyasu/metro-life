@@ -16,6 +16,11 @@ angular.module('metroLifeApp')
     $scope.directions = [];
     $scope.nearbyTrainList = [];
 
+    setTimeout(function(){
+      setStationAndDirection($scope.selectedStation['odpt:station'],
+          $scope.currentDirection['odpt:station']);
+    },10000)
+
     function setStationAndDirection(station, direction) {
     $scope.nearbyTrainList = [];
     $http.get('/api/tokyometro/trains/nearby/' + station)
@@ -96,6 +101,10 @@ angular.module('metroLifeApp')
             });
           $scope.nearbyTrainList.push(item);
         });
+      })
+      .then(function(){
+        $scope.loading ="true";
+        console.log('loaded')
       });
     }
 
