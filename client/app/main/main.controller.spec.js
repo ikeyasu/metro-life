@@ -32,7 +32,7 @@ describe('Controller: MainCtrl', function () {
   });
 
   it('getDateObjFromTimeString tests', function () {
-    if ((new Date()).getTimezoneOffset() / 60 != -9) {
+    if ((new Date()).getTimezoneOffset() / 60 !== -9) {
       return;
     }
     $httpBackend.flush();
