@@ -1,34 +1,42 @@
 <div class="wrapper">
     <div class="head">
-        <div class="text">{{currentStation['dc:title']}} : {{currentDirection['dc:title']}} 方面</div>
+        <div class="text"><i class="fa fa-circle-o {{selectedRailway['odpt:lineCode']}}"></i> {{selectedRailway['dc:title']}}線　{{currentStation['dc:title']}}駅 ( {{currentDirection['dc:title']}} 方面 )</div>
     </div>
     <div ng-show="loading">
+
         <div class="circle-wrap">
+
             <div class="circle">
-                <div class="time">{{nearbyTrainList[0]['timeToCurrentStation']}}</div>
-                <div class="status">{{nearbyTrainList[0]['delayStatusCopy']}}</div>
+                <div class="traintype {{nearbyTrainList[selectedTrain]['trainTypeCss']}}">{{nearbyTrainList[selectedTrain]['trainType']}}</div>
+                <div class="time">{{nearbyTrainList[selectedTrain]['timeToCurrentStation']}}</div>
+                <div class="status">{{nearbyTrainList[selectedTrain]['delayStatusCopy']}}</div>
             </div>
+            <ul class="dot-container" style="">
+                <li class="dot-wrap" ng-style="{'transform': train.dotRotate}" ng-repeat="train in nearbyTrainList">
+                    <div class="dot {{train.delayStatus}} {{train.trainTypeCss}}"  ng-click="changeCenter($index)" ng-class="{ 'active': $index == selectedIndex }"></div>
+                </li>
+            </ul>
 
-            <div class="dot-wrap" ng-style="{'transform': train.dotRotate}" ng-repeat="train in nearbyTrainList">
-                <div class="dot {{train.delayStatus}}"></div>
-            </div>
+            <div class="ab ab-n">n</div>
+            <div class="ab ab-i">i</div>
+            <div class="ab ab-m">m</div>
+            <div class="ab ab-0">0</div>
+            <div class="ab ab-3">3</div>
+            <div class="ab ab-fa"><i class="fa fa-caret-left"></i></div>
+            <div class="ab ab-20">20</div>
+            <!-- <div class="ab ab-15">15</div> -->
+            <div class="ab ab-10">10</div>
+            <div class="ab ab-5">5</div>
+
+            <div class="ab-arrow ar1"><i class="fa fa-sort-desc"></i></div>
+            <div class="ab-arrow ar2"><i class="fa fa-sort-desc"></i></div>
+            <div class="ab-arrow ar3"><i class="fa fa-sort-desc"></i></div>
+            <!-- <div class="ab-arrow ar4"><i class="fa fa-sort-desc"></i></div> -->
+            <div class="ab-arrow ar5"><i class="fa fa-sort-desc"></i></div>
+            <!-- <div class="ab-arrow ar6"><i class="fa fa-sort-desc"></i></div> -->
 
         </div>
-        <div class="list-wrap">
-            <div class="list" ng-repeat="train in nearbyTrainList  ">
-                <div class="bar-wrap">
-                    <div class="content bar {{train.delayStatus}}" style="width : {{train.barWidth.width}}">
-                        <div class="train-type {{train.trainTypeCss}}">{{train.trainType}}</div>
-                        <div class="time-to-station">{{train.timeToCurrentStation}}</div>
-                    </div>
-                    <div class="delayed-time" ng-show="train.delayStatus">
-                        {{train.delayStatusCopy}}
-                    </div>
-                    <div class="bg-line"></div>
-                    <div class="bg-right-circle"></div>
-                </div>
-            </div>
-        </div>
+
         <nav>
             <div id="" class="menu">
               <div id="selected-railway" class="inner">
@@ -49,23 +57,21 @@
     </div>
     
     <div class="loading" ng-hide="loading">
-        <div class="circle-wrap">
+        <div class="circle-wrap" >
             <div class="circle">
                 <div class="load-text">Loading...</div>
             </div>
-            <div class="dot-wrap load spin1">
-                <div class="dot false"></div>
+            <div class="load spin1">
+                <div class="loadingdot false"></div>
             </div>
-            <div class="dot-wrap load spin2">
-                <div class="dot false"></div>
+            <div class="load spin2">
+                <div class="loadingdot false"></div>
             </div>
-            <div class="dot-wrap load spin3">
-                <div class="dot false"></div>
+            <div class="load spin3">
+                <div class="loadingdot false"></div>
             </div>
-
         </div>
     </div>
-
 </div>
 
 

@@ -31,6 +31,8 @@ angular.module('metroLifeApp')
       return (input.timespan.value / 1000 / 60) < 30;
     };
 
+
+
     // Update for 1 sec.
     setInterval(function() {
       $scope.$apply();
@@ -39,6 +41,13 @@ angular.module('metroLifeApp')
     $scope.railways = [];
     $scope.directions = [];
     $scope.nearbyTrainList = [];
+
+
+    $scope.changeCenter = function (index){
+      $scope.selectedTrain = index;
+      $scope.selectedIndex = index;
+    }
+
     function removeItem(item) {
       var i = _.findIndex($scope.nearbyTrainList, function (train) {
         return train === item;
@@ -108,6 +117,8 @@ angular.module('metroLifeApp')
         });
       })
       .then(function(){
+        $scope.selectedTrain = 0;
+        $scope.selectedIndex = 0;
         $scope.loading ='true';
       });
     }
