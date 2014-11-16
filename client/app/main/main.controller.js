@@ -10,36 +10,43 @@ angular.module('metroLifeApp')
       return (MOCK === true) ? new Date('2014-10-19T16:31:45+09:00') : new Date();
     }
     function getTommorow(now) {
-      now = now ? now : getNow();
       return new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
     }
-    function getTimeLeftFromDayAndTrainTime(day, traintime, now) {
+    function getDateObjFromTimeString(time, now) {
       now = now ? now : getNow();
-      return (new Date(day.toDateString() + ' ' + traintime)) - now;
-    }
-    function getTimeLeft(traintime, now) {
-      now = now ? now : getNow();
-      var milliSec = getTimeLeftFromDayAndTrainTime(now, traintime, now);
-      if (milliSec < 0) {
-        // becoming tommorow
-        milliSec = getTimeLeftFromDayAndTrainTime(getTommorow(now), traintime, now);
+      var date = new Date(now.toDateString() + ' ' + time);
+      var diff = date - now;
+      if (diff < 0) {
+        date = getDateObjFromTimeString(time, getTommorow(now));
       }
-      return milliSec;
+      return date;
     }
-    $scope.getTimeLeft = getTimeLeft; // for test
+    $scope.getDateObjFromTimeString = getDateObjFromTimeString; // for test
 
     // filter
     $scope.in30mins = function (input) {
-      return parseInt(input.timeToCurrentStation) <= 30;
+      if (!input || !input.timespan) {
+        return false;
+      }
+      return (input.timespan.value / 1000 / 60) < 30;
     };
 
-    $http.get('/api/tokyometro/trains/delayed').success(function (trains) {
-      $scope.trains = trains;
-    });
+    // Update for 1 sec.
+    setInterval(function() {
+      $scope.$apply();
+    }, 1000);
 
     $scope.railways = [];
     $scope.directions = [];
     $scope.nearbyTrainList = [];
+    function removeItem(item) {
+      var i = _.findIndex($scope.nearbyTrainList, function (train) {
+        return train === item;
+      });
+      if (i >= 0) {
+        $scope.nearbyTrainList.splice(i, 1);
+      }
+    }
 
 
     function setStationAndDirection(station, direction) {
@@ -55,78 +62,53 @@ angular.module('metroLifeApp')
             delayStatus: train['odpt:delay'] !== 0 ? true : false,
             delayStatusCopy: train['odpt:delay'] === 0 ? '平常運行' : parseInt(train['odpt:delay'] / 60) + '分遅れ',
             trainNumber: train['odpt:trainNumber'],
-            timeTable: '',
+            dateObjToArrive: null,
             trainType: train['odpt:trainType'] === 'odpt.TrainType:TokyoMetro.Local' ? '普通' : '快速',
             trainTypeCss: train['odpt:trainType'].indexOf('ocal') > -1 ? 'local' : 'rapid',
             timeToCurrentStation: '',
+            timespan: null,
             barWidth: {
-              'width': ''
+              'width': '0'
             },
             dotRotate: '',
             rotate: 30
           };
           requestDepatureTime(item.trainNumber)
             .then(function (time) {
-              item.timeTable = time;
-              var milliSec = getTimeLeft(time) + (item.delay * 1000);
-              var MAXIMUM_TIMELEFT = 30 * 1000; // Show upcoming trains in 30 mins (30,000 milli-sec)
-              var PROGRESS_PER_SECOND = 1 / 30 / 60; // Go around on 30 mins
-              var dotPosition = milliSec / (MAXIMUM_TIMELEFT * 60);
-              var seconds = Math.floor((milliSec / 1000) % 60);
-              var minutes = Math.floor(((milliSec / 1000) - seconds) / 60);
-
-              function countdown() {
-                minutes = parseInt(minutes);
-                seconds = parseInt(seconds);
-                if (seconds === 0 && minutes === 0) {
-                  var i = _.findIndex($scope.nearbyTrainList, function (train) {
-                    return train === item;
-                  });
-                  if (i >= 0) {
-                    $scope.nearbyTrainList.splice(i, 1);
-                  }
-                } else if (seconds === 0) {
-                  minutes--;
-                  seconds = 59;
-                } else {
-                  seconds--;
-                }
-                minutes = minutes + '';
-                seconds = seconds + '';
-                if (minutes < 10 && minutes.length === 1) {
-                  minutes = '0' + minutes;
-                }
-                if (seconds < 10 && seconds.length === 1) {
-                  seconds = '0' + seconds;
-                }
-                item.timeToCurrentStation = minutes + ':' + seconds;
-              }
-
-              function progress() {
-                if (dotPosition <= 0) {
-                  dotPosition = 0;
-                } else {
-                  dotPosition -= PROGRESS_PER_SECOND;
-                }
-                item.barWidth.width = 30 + (1 - dotPosition) * 60 + '%';
-                item.dotRotate = 'rotate(' + (360 * dotPosition) + 'deg)';
-                item.rotate = 360 * dotPosition;
-              }
-
-              countdown();
-              progress();
-
-              setInterval(function () {
-                $scope.$apply(countdown);
-                $scope.$apply(progress);
-              }, 1000);
+              var MAXIMUM_TIMELEFT = 30 * 60; // Show upcoming trains in 30 mins (1800 sec)
+              item.dateObjToArrive = getDateObjFromTimeString(time);
+              countdown(
+                    function(ts) {
+                      var position = (ts.value / 1000) / (MAXIMUM_TIMELEFT);
+                      if (position > 1.0) {
+                        return;
+                      }
+                      if (ts.value < 0) {
+                        removeItem(item);
+                      }
+                      item.timeToCurrentStation =
+                           ('0' + ts.minutes).substr(-2) + ':' + ('0' + ts.seconds).substr(-2);
+                      item.barWidth.width = 30 + (1 - position) * 60 + '%';
+                      item.dotRotate = 'rotate(' + (360 * position) + 'deg)';
+                      item.rotate = 360 * position;
+                      if (!item.timespan) {
+                        item.timespan = ts;
+                        $scope.nearbyTrainList.push(item);
+                        $scope.nearbyTrainList =
+                          $scope.nearbyTrainList.sort(function(a, b) {
+                            return a.timespan.value - b.timespan.value;
+                          });
+                      }
+                      item.timespan = ts;
+                    },
+                    item.dateObjToArrive,
+                    /*jslint bitwise: true */
+                    countdown.HOURS | countdown.MINUTES | countdown.SECONDS);
             });
-          $scope.nearbyTrainList.push(item);
         });
       })
       .then(function(){
-        $scope.loading ="true";
-        console.log($scope.nearbyTrainList);
+        $scope.loading ='true';
       });
     }
 
@@ -190,18 +172,10 @@ angular.module('metroLifeApp')
             return prev;
           }, null);
           if (time) {
-
             deferred.resolve(time);
           } else {
             deferred.reject(null);
           }
-        })
-        .then(function () {
-          $scope.nearbyTrainList = _.chain($scope.nearbyTrainList)
-            .sortBy(function (key) {
-              return parseInt(key.timeToCurrentStation);
-            })
-            .value();
         });
       return deferred.promise;
     }

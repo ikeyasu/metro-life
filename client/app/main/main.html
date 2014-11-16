@@ -9,7 +9,7 @@
                 <div class="status">{{nearbyTrainList[0]['delayStatusCopy']}}</div>
             </div>
 
-            <div class="dot-wrap" ng-style="{'transform': train.dotRotate}" ng-repeat="train in nearbyTrainList | filter:in30mins">
+            <div class="dot-wrap" ng-style="{'transform': train.dotRotate}" ng-repeat="train in nearbyTrainList">
                 <div class="dot {{train.delayStatus}}"></div>
             </div>
 
