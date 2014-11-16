@@ -42,6 +42,7 @@ angular.module('metroLifeApp')
     $scope.directions = [];
     $scope.nearbyTrainList = [];
 
+
     $scope.changeCenter = function (index){
       $scope.selectedTrain = index;
       $scope.selectedIndex = index;
