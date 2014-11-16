@@ -36,7 +36,25 @@
             <!-- <div class="ab-arrow ar6"><i class="fa fa-sort-desc"></i></div> -->
 
         </div>
+<<<<<<< HEAD
 
+=======
+        <div class="list-wrap">
+            <div class="list" ng-repeat="train in nearbyTrainList  ">
+                <div class="bar-wrap">
+                    <div class="content bar {{train.delayStatus}}" style="width : {{train.barWidth}}">
+                        <div class="train-type {{train.trainTypeCss}}">{{train.trainType}}</div>
+                        <div class="time-to-station">{{train.timeToCurrentStation}}</div>
+                    </div>
+                    <div class="delayed-time" ng-show="train.delayStatus">
+                        {{train.delayStatusCopy}}
+                    </div>
+                    <div class="bg-line"></div>
+                    <div class="bg-right-circle"></div>
+                </div>
+            </div>
+        </div>
+>>>>>>> 6135c8c750c233f862d110d83ff48fff974fe6c6
         <nav>
             <div id="" class="menu">
               <div id="selected-railway" class="inner">
