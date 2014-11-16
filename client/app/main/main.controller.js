@@ -10,18 +10,18 @@ angular.module('metroLifeApp')
       return (MOCK === true) ? new Date('2014-10-19T16:31:45+09:00') : new Date();
     }
 
-    function addDay(date, diff) {
+    function addDay(date, days) {
       date = date ? date : getNow();
       var timezoneOffset = date.getTimezoneOffset() * 60 * 1000;
       var time = date.getTime();
       var now = new Date();
        var timezoneOffset2;
 
-      time += (1000 * 60 * 60 * 24) * diff;
+      time += (1000 * 60 * 60 * 24) * days;
       now.setTime(time);
 
       timezoneOffset2 = now.getTimezoneOffset() * 60 * 1000;
-      if (timezoneOffset != timezoneOffset2) {
+      if (timezoneOffset !== timezoneOffset2) {
         var diff = timezoneOffset2 - timezoneOffset;
         time += diff;
         now.setTime(time);
