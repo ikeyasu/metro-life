@@ -42,7 +42,6 @@ angular.module('metroLifeApp')
     $scope.directions = [];
     $scope.nearbyTrainList = [];
 
-
     $scope.changeCenter = function (index){
       $scope.selectedTrain = index;
       $scope.selectedIndex = index;
@@ -56,50 +55,49 @@ angular.module('metroLifeApp')
         $scope.nearbyTrainList.splice(i, 1);
       }
     }
-
+    var timerIds = [];
 
     function setStationAndDirection(station, direction) {
+    _(timerIds).forEach(function(timerId) {
+      window.clearInterval(timerId);
+    });
+    timerIds = [];
     $scope.nearbyTrainList = [];
     $http.get('/api/tokyometro/trains/nearby/' + station)
       .then(function (data) {
         var downDirection = data.data[direction];
         _(downDirection).forEach(function (train) {
           var item = {
-            fromStation: train['odpt:fromStation'],
-            toStation: train['odpt:toStation'],
-            delay: train['odpt:delay'],
             delayStatus: train['odpt:delay'] !== 0 ? true : false,
             delayStatusCopy: train['odpt:delay'] === 0 ? '平常運行' : parseInt(train['odpt:delay'] / 60) + '分遅れ',
-            trainNumber: train['odpt:trainNumber'],
             dateObjToArrive: null,
             trainType: train['odpt:trainType'] === 'odpt.TrainType:TokyoMetro.Local' ? '普通' : '快速',
             trainTypeCss: train['odpt:trainType'].indexOf('ocal') > -1 ? 'local' : 'rapid',
             timeToCurrentStation: '',
             timespan: null,
-            barWidth: {
-              'width': '0'
-            },
+            barWidth: 0,
             dotRotate: '',
-            rotate: 30
           };
-          requestDepatureTime(item.trainNumber)
+          requestDepatureTime(train['owl:sameAs'])
             .then(function (time) {
               var MAXIMUM_TIMELEFT = 30 * 60; // Show upcoming trains in 30 mins (1800 sec)
               item.dateObjToArrive = getDateObjFromTimeString(time);
-              countdown(
+              var timerId = countdown(
                     function(ts) {
                       var position = (ts.value / 1000) / (MAXIMUM_TIMELEFT);
                       if (position > 1.0) {
                         return;
                       }
                       if (ts.value < 0) {
-                        removeItem(item);
+                        // refresh
+                        setStationAndDirection($scope.selectedStation['odpt:station'],
+                            $scope.currentDirection['odpt:station']);
+                        return;
                       }
                       item.timeToCurrentStation =
                            ('0' + ts.minutes).substr(-2) + ':' + ('0' + ts.seconds).substr(-2);
-                      item.barWidth.width = 30 + (1 - position) * 60 + '%';
+                      item.barWidth = 30 + (1 - position) * 60 + '%';
                       item.dotRotate = 'rotate(' + (360 * position) + 'deg)';
-                      item.rotate = 360 * position;
                       if (!item.timespan) {
                         item.timespan = ts;
                         $scope.nearbyTrainList.push(item);
@@ -113,6 +111,7 @@ angular.module('metroLifeApp')
                     item.dateObjToArrive,
                     /*jslint bitwise: true */
                     countdown.HOURS | countdown.MINUTES | countdown.SECONDS);
+                timerIds.push(timerId);
             });
         });
       })
@@ -169,12 +168,17 @@ angular.module('metroLifeApp')
           $scope.currentDirection['odpt:station']);
     };
 
-    function requestDepatureTime(trainNum) {
+    function getDayType(date) {
+      date = date ? date : new Date();
+      var w = ['holidays','weekdays','weekdays','weekdays','weekdays','weekdays','saturdays'];
+      return w[date.getDay()];
+    }
+
+    function requestDepatureTime(train) {
       var deferred = $q.defer();
-      $http.get('/api/tokyometro/trains/timetable/' + trainNum)
+      $http.get('/api/tokyometro/trains/timetable/' + train + '/' + getDayType())
         .then(function (data) {
-          var timetables = data.data;
-          var table = timetables['odpt:holidays'] ? timetables['odpt:holidays'] : timetables['odpt:weekdays'];
+          var table = data.data;
 
           var time = _(table).reduce(function (prev, cur) {
             if (cur['odpt:departureStation'] === $scope.currentStation['odpt:station']) {

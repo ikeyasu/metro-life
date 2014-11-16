@@ -4,6 +4,7 @@
  * GET     /trains/:id               ->  show
  * GET     /trains/delayed           ->  list of delayed trains
  * GET     /trains/nearby/:station   ->  list of trains near by the station
+ * GET     /trains/timetable/:train?type=:type ->  timetable
  */
 
 'use strict';
@@ -52,13 +53,24 @@ exports.nearby = function(req, res) {
 
 // Get train's timetable
 exports.timetable = function(req, res) {
+  var type = req.params.type ? req.params.type : "weekdays";
   Tokyometro.request({
     "rdf:type": "odpt:TrainTimetable",
-    "odpt:trainNumber": req.params.trainNumber
+    "odpt:train": req.params.train
   }, function(err, json){
     if(err) { return handleError(res, err); }
     if(!json) { return res.send(404); }
-    return res.json(json[0]);
+    var ret = json.reduce(function(prev, cur) {
+      if (type === "saturdays" && cur["odpt:saturdays"]) {
+        return cur["odpt:saturdays"];
+      } else if (type === "holidays" && cur["odpt:holidays"]) {
+        return cur["odpt:holidays"];
+      } else if (type === "weekdays" && cur["odpt:weekdays"]) {
+        return cur["odpt:weekdays"];
+      }
+      return prev;
+    }, null);
+    return res.json(ret);
   });
 };
 
