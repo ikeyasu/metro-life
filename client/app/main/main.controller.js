@@ -2,6 +2,31 @@
 
 angular.module('metroLifeApp')
   .controller('MainCtrl', function ($scope, $http, $q) {
+    // When you use mock, please set 'usingMock:true,'
+    // in server/config/environment/development.js
+    var MOCK = false;
+
+    function getNow() {
+      return (MOCK === true) ? new Date('2014-10-19T16:31:45+09:00') : new Date();
+    }
+    function getTommorow(now) {
+      now = now ? now : getNow();
+      return new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+    }
+    function getTimeLeftFromDayAndTrainTime(day, traintime, now) {
+      now = now ? now : getNow();
+      return (new Date(day.toDateString() + ' ' + traintime)) - now;
+    }
+    function getTimeLeft(traintime, now) {
+      now = now ? now : getNow();
+      var milliSec = getTimeLeftFromDayAndTrainTime(now, traintime, now);
+      if (milliSec < 0) {
+        // becoming tommorow
+        milliSec = getTimeLeftFromDayAndTrainTime(getTommorow(now), traintime, now);
+      }
+      return milliSec;
+    }
+    $scope.getTimeLeft = getTimeLeft; // for test
 
     // filter
     $scope.in30mins = function (input) {
@@ -16,10 +41,6 @@ angular.module('metroLifeApp')
     $scope.directions = [];
     $scope.nearbyTrainList = [];
 
-    setTimeout(function(){
-      setStationAndDirection($scope.selectedStation['odpt:station'],
-          $scope.currentDirection['odpt:station']);
-    },10000)
 
     function setStationAndDirection(station, direction) {
     $scope.nearbyTrainList = [];
@@ -47,21 +68,23 @@ angular.module('metroLifeApp')
           requestDepatureTime(item.trainNumber)
             .then(function (time) {
               item.timeTable = time;
-              var date = new Date();
-              var miriSec = (new Date((date).toDateString() + ' ' + time) - new Date()) + (item.delay * 1000);
-              miriSec = miriSec > 0 ? miriSec : function(){
-                return (new Date((new Date(date.getFullYear(),date.getMonth(),date.getDate()+1)).toDateString() + ' ' + time) - new Date()) + (item.delay * 1000);
-              };
-              var maximum = 30; //30min
-              var pers = miriSec / (maximum * 60 * 1000);
-              var prgsPerSec = 1 / 30 / 60; // 30分で１周
-              var seconds = Math.floor((miriSec / 1000) % 60);
+              var milliSec = getTimeLeft(time) + (item.delay * 1000);
+              var MAXIMUM_TIMELEFT = 30 * 1000; // Show upcoming trains in 30 mins (30,000 milli-sec)
+              var PROGRESS_PER_SECOND = 1 / 30 / 60; // Go around on 30 mins
+              var dotPosition = milliSec / (MAXIMUM_TIMELEFT * 60);
+              var seconds = Math.floor((milliSec / 1000) % 60);
+              var minutes = Math.floor(((milliSec / 1000) - seconds) / 60);
 
               function countdown() {
                 minutes = parseInt(minutes);
                 seconds = parseInt(seconds);
                 if (seconds === 0 && minutes === 0) {
-
+                  var i = _.findIndex($scope.nearbyTrainList, function (train) {
+                    return train === item;
+                  });
+                  if (i >= 0) {
+                    $scope.nearbyTrainList.splice(i, 1);
+                  }
                 } else if (seconds === 0) {
                   minutes--;
                   seconds = 59;
@@ -77,18 +100,17 @@ angular.module('metroLifeApp')
                   seconds = '0' + seconds;
                 }
                 item.timeToCurrentStation = minutes + ':' + seconds;
-              }             
-              var minutes = Math.floor(((miriSec / 1000) - seconds) / 60);
+              }
 
               function progress() {
-                if (pers <= 0) {
-                  pers = 0;
+                if (dotPosition <= 0) {
+                  dotPosition = 0;
                 } else {
-                  pers -= prgsPerSec;
+                  dotPosition -= PROGRESS_PER_SECOND;
                 }
-                item.barWidth.width = 30 + (1 - pers) * 60 + '%';
-                item.dotRotate = 'rotate(' + (360 * pers) + 'deg)';
-                item.rotate = 360 * pers;
+                item.barWidth.width = 30 + (1 - dotPosition) * 60 + '%';
+                item.dotRotate = 'rotate(' + (360 * dotPosition) + 'deg)';
+                item.rotate = 360 * dotPosition;
               }
 
               countdown();
@@ -104,7 +126,7 @@ angular.module('metroLifeApp')
       })
       .then(function(){
         $scope.loading ="true";
-        console.log('loaded')
+        console.log($scope.nearbyTrainList);
       });
     }
 

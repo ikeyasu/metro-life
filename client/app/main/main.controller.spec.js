@@ -32,4 +32,21 @@ describe('Controller: MainCtrl', function () {
     $httpBackend.flush();
     expect(scope.railways.length).toEqual(10);
   });
+
+  it('should attach a list of trains to the scope', function () {
+    $httpBackend.flush();
+    expect(scope.railways.length).toEqual(10);
+  });
+
+  it('getTimeLeft tests', function () {
+    $httpBackend.flush();
+    expect(scope.getTimeLeft('23:00', new Date('2014/11/15 22:59'))).toEqual(60 * 1000);
+    expect(scope.getTimeLeft('00:00', new Date('2014/11/16 00:00'))).toEqual(0 * 1000);
+    expect(scope.getTimeLeft('00:01', new Date('2014/11/16 00:00'))).toEqual(60 * 1000);
+    expect(scope.getTimeLeft('00:02', new Date('2014/11/16 00:01'))).toEqual(60 * 1000);
+    expect(scope.getTimeLeft('00:00', new Date('2014/11/15 23:59'))).toEqual(60 * 1000);
+    expect(scope.getTimeLeft('00:01', new Date('2014/11/15 23:59'))).toEqual(120 * 1000);
+    expect(scope.getTimeLeft('00:00', new Date('2014/11/15 23:30'))).toEqual(30 * 60 * 1000);
+    expect(scope.getTimeLeft('00:01', new Date('2014/11/15 23:30'))).toEqual(31 * 60 * 1000);
+  });
 });

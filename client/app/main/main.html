@@ -2,55 +2,70 @@
     <div class="head">
         <div class="text">{{currentStation['dc:title']}} : {{currentDirection['dc:title']}} 方面</div>
     </div>
-    <div class="circle-wrap">
-        <div class="circle">
-            <div class="time">{{nearbyTrainList[0]['timeToCurrentStation']}}</div>
-            <div class="status">{{nearbyTrainList[0]['delayStatusCopy']}}</div>
-        </div>
+    <div ng-show="loading">
+        <div class="circle-wrap">
+            <div class="circle">
+                <div class="time">{{nearbyTrainList[0]['timeToCurrentStation']}}</div>
+                <div class="status">{{nearbyTrainList[0]['delayStatusCopy']}}</div>
+            </div>
 
-        <div class="dot-wrap" ng-style="{'transform': train.dotRotate}" ng-repeat="train in nearbyTrainList | filter:in30mins">
-            <div class="dot {{train.delayStatus}}"></div>
-        </div>
+            <div class="dot-wrap" ng-style="{'transform': train.dotRotate}" ng-repeat="train in nearbyTrainList | filter:in30mins">
+                <div class="dot {{train.delayStatus}}"></div>
+            </div>
 
-    </div>
-    <div class="list-wrap">
-        <div class="list" ng-repeat="train in nearbyTrainList | filter:in30mins ">
-            <div class="bar-wrap">
-                <div class="content bar {{train.delayStatus}}" style="width : {{train.barWidth.width}}">
-                    <div class="train-type {{train.trainTypeCss}}">{{train.trainType}}</div>
-                    <div class="time-to-station">{{train.timeToCurrentStation}}</div>
+        </div>
+        <div class="list-wrap">
+            <div class="list" ng-repeat="train in nearbyTrainList  ">
+                <div class="bar-wrap">
+                    <div class="content bar {{train.delayStatus}}" style="width : {{train.barWidth.width}}">
+                        <div class="train-type {{train.trainTypeCss}}">{{train.trainType}}</div>
+                        <div class="time-to-station">{{train.timeToCurrentStation}}</div>
+                    </div>
+                    <div class="delayed-time" ng-show="train.delayStatus">
+                        {{train.delayStatusCopy}}
+                    </div>
+                    <div class="bg-line"></div>
+                    <div class="bg-right-circle"></div>
                 </div>
-                <div class="delayed-time" ng-show="train.delayStatus">
-                    {{train.delayStatusCopy}}
-                </div>
-                <div class="bg-line"></div>
-                <div class="bg-right-circle"></div>
             </div>
         </div>
-    </div>
-    <nav>
-        <div id="" class="menu">
-          <div id="selected-railway" class="inner">
-            <select class="selectpicker form-control" style="color:black" ng-model="selectedRailway" ng-options="railway['dc:title'] for railway in railways"></select>
-          </div>
-        </div>
-        <div id="" class="menu">
-          <div id="selected-station" class="inner">
-            <select class="selectpicker form-control" style="color:black" ng-selected="onStationSelected()" ng-model="selectedStation" ng-options="station['dc:title'] for station in selectedRailway['odpt:stationOrder']"></select>
-          </div>
-        </div>
-        <div id="" class="menu">
-            <div id="selected-direction" class="inner">
-                <select class="selectpicker form-control" style="color:black" ng-selected="onDirectionSelected()" ng-model="selectedDirection" ng-options="direction['dc:title'] for direction in directions"></select>
+        <nav>
+            <div id="" class="menu">
+              <div id="selected-railway" class="inner">
+                <select class="selectpicker form-control" style="color:black" ng-model="selectedRailway" ng-options="railway['dc:title'] for railway in railways"></select>
+              </div>
             </div>
-        </div>
-    </nav>
-
+            <div id="" class="menu">
+              <div id="selected-station" class="inner">
+                <select class="selectpicker form-control" style="color:black" ng-selected="onStationSelected()" ng-model="selectedStation" ng-options="station['dc:title'] for station in selectedRailway['odpt:stationOrder']"></select>
+              </div>
+            </div>
+            <div id="" class="menu">
+                <div id="selected-direction" class="inner">
+                    <select class="selectpicker form-control" style="color:black" ng-selected="onDirectionSelected()" ng-model="selectedDirection" ng-options="direction['dc:title'] for direction in directions"></select>
+                </div>
+            </div>
+        </nav>
+    </div>
+    
     <div class="loading" ng-hide="loading">
-        <div class="spinner">
-            <i class="fa fa-spinner fa-spin"></i>
+        <div class="circle-wrap">
+            <div class="circle">
+                <div class="load-text">Loading...</div>
+            </div>
+            <div class="dot-wrap load spin1">
+                <div class="dot false"></div>
+            </div>
+            <div class="dot-wrap load spin2">
+                <div class="dot false"></div>
+            </div>
+            <div class="dot-wrap load spin3">
+                <div class="dot false"></div>
+            </div>
+
         </div>
     </div>
+
 </div>
 
 

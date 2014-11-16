@@ -66,30 +66,6 @@ body{
     width:480px;
     z-index:1;
 }
-.loading{
-
-    background-color:rgba(0,0,0,0.2);
-    height:100%;
-    position:absolute;
-    top:0;
-    left:0;
-    width:100%;
-    z-index:2000;
-    .fa{
-        color:#fff;
-        font-size:40px;
-    }
-    .spinner{
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        margin: auto;
-        width:10%;
-        height:10%;
-    }
-}
 .head{
     background-color:rgba(0,0,0,0.15);
     color:#fff!important;
@@ -123,7 +99,7 @@ $circle:260px;
     right: 0;
     padding:50px 0;
     /*bottom: 0;*/
-    margin: 20px auto;
+    margin: 40px auto;
 	text-align:center;
     width:$circle;
     .time{
@@ -276,6 +252,157 @@ nav{
     width:100%!important;
 }
 
+/*********\
+Loading 
+\*********/
+.loading{
+
+    background-color:rgba(0,0,0,0.2);
+    height:100%;
+    /*position:absolute;*/
+    top:0;
+    left:0;
+    width:100%;
+    z-index:2000;
+    padding:40px 0;
+    .fa{
+        color:#fff;
+        font-size:40px;
+    }
+    .spinner{
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        margin: auto;
+        width:10%;
+        height:10%;
+    }
+
+    .circle{
+        background-image:url("/assets/images/noise.png");
+        border:10px solid rgba(0,0,0,0.2);
+        border-radius:130px;
+        box-shadow: 0 0 1px 1px #16B0D1 inset, 0 2px 8px 1px #000 inset;
+        height:$circle;
+        position: relative;
+        top: 0;
+        left: 0;
+        right: 0;
+        padding:50px 0;
+        margin: 0px auto;
+        text-align:center;
+        width:$circle;
+        .load-text{
+            color:rgba(255,255,255,0.8);
+            font-family: 'Share Tech', sans-serif;
+            font-size:30px;
+            margin:50px 0 0 20px;
+            text-shadow:0 4px 8px #000;
+        }
+    }
+
+    .dot-wrap{
+        border:10px solid rgba(0,0,0,0);
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+        height:$circle;
+        width:$circle;
+        border-radius:130px;
+    }
+    .dot1{transform:rotate(180deg);}
+    .dot{
+        position:absolute;
+        left:120px;
+        top:-4px;
+        border-radius:20px;
+    }
+}
+.load {
+    -webkit-animation-duration: 3000ms;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-timing-function: linear;
+    -moz-animation-duration: 3000ms;
+    -moz-animation-iteration-count: infinite;
+    -moz-animation-timing-function: linear;
+    -ms-animation-duration: 3000ms;
+    -ms-animation-iteration-count: infinite;
+    -ms-animation-timing-function: linear;
+    animation-duration: 3000ms;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+.spin1{
+
+    -webkit-animation-name: spin;
+    -moz-animation-name: spin;
+    -ms-animation-name: spin;
+    animation-name: spin;
+}
+.spin2 {
+    -webkit-animation-name: spin2;
+    -moz-animation-name: spin2;
+    -ms-animation-name: spin2;
+    animation-name: spin2;
+}
+.spin3 {
+    -webkit-animation-name: spin3;
+    -moz-animation-name: spin3;
+    -ms-animation-name: spin3;
+    animation-name: spin3;
+}
+@-ms-keyframes spin {
+    from { -ms-transform: rotate(0deg); }
+    to { -ms-transform: rotate(-360deg); }
+}
+@-moz-keyframes spin {
+    from { -moz-transform: rotate(0deg); }
+    to { -moz-transform: rotate(-360deg); }
+}
+@-webkit-keyframes spin {
+    from { -webkit-transform: rotate(0deg); }
+    to { -webkit-transform: rotate(-360deg); }
+}
+@keyframes spin {
+    from {transform:rotate(0deg);}
+    to {transform:rotate(-360deg);}
+}
+@-ms-keyframes spin2 {
+    from { -ms-transform: rotate(120deg); }
+    to { -ms-transform: rotate(-240deg); }
+}
+@-moz-keyframes spin2 {
+    from { -moz-transform: rotate(120deg); }
+    to { -moz-transform: rotate(-240deg); }
+}
+@-webkit-keyframes spin2 {
+    from { -webkit-transform: rotate(120deg); }
+    to { -webkit-transform: rotate(-240deg); }
+}
+@keyframes spin2 {
+    from {transform:rotate(120deg);}
+    to {transform:rotate(-240deg);}
+}
+@-ms-keyframes spin3 {
+    from { -ms-transform: rotate(240deg); }
+    to { -ms-transform: rotate(-120deg); }
+}
+@-moz-keyframes spin3 {
+    from { -moz-transform: rotate(240deg); }
+    to { -moz-transform: rotate(-120deg); }
+}
+@-webkit-keyframes spin3 {
+    from { -webkit-transform: rotate(240deg); }
+    to { -webkit-transform: rotate(-120deg); }
+}
+@keyframes spin3 {
+    from {transform:rotate(240deg);}
+    to {transform:rotate(-120deg);}
+}
 
 @media only screen and (device-width: 768px) and (orientation: landscape) {
   /* rules for iPad in landscape orientation */
