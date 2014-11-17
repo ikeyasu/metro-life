@@ -1,6 +1,7 @@
 <div class="wrapper">
     <div class="head">
-        <div class="text"><i class="fa fa-circle-o {{selectedRailway['odpt:lineCode']}}"></i> {{selectedRailway['dc:title']}}線　{{currentStation['dc:title']}}駅    ー {{currentDirection['dc:title']}}方面行き </div>
+        <div class="kurukuru" ng-hide="loading">kurukuru</div>
+        <div class="text" ng-show="loading"><i class="fa fa-circle-o {{selectedRailway['odpt:lineCode']}}"></i> {{selectedRailway['dc:title']}}線　{{currentStation['dc:title']}}駅    ー {{currentDirection['dc:title']}}方面行き </div>
     </div>
     <div ng-show="loading">
 
@@ -73,6 +74,8 @@
                 <div class="loadingdot false"></div>
             </div>
         </div>
+        
+        <div class="kurukuru">kurukuru</div>
     </div>
 </div>
 

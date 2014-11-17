@@ -50,12 +50,12 @@ $actionColor : #28C3F2;
  * App-wide Styles
  */
 .kurukuru{
-    bottom:80px;
+    top:-10px;
     color:rgba(0,0,0,0.2);
     font-family: 'Share Tech', sans-serif;
     font-size:32px;
     margin:0 auto;
-    position:fixed;
+    position:relative;
     text-align:center;
     width:100%;
 }
@@ -105,6 +105,10 @@ body{
     .fa{
         font-weight:bold;
         font-size:20px;
+    }
+    .kurukuru{
+        height:32px;
+        font-size:12px;
     }
 }
 .min30{
@@ -339,11 +343,6 @@ Loading
     left:0;
     width:100%;
     z-index:2000;
-    padding:40px 0;
-    .fa{
-        color:#fff;
-        font-size:40px;
-    }
 
     .circle{
         background-image:url("/assets/images/noise.png");
@@ -356,7 +355,7 @@ Loading
         left: 0;
         right: 0;
         padding:50px 0;
-        margin: 40px auto;
+        margin: 80px auto;
         text-align:center;
         width:$circle;
         .load-text{
