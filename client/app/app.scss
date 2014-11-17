@@ -189,7 +189,12 @@ body{
     z-index:500;
 }
 
-.ar1{transform:rotate(0deg);color:#EC4478;opacity:1;}
+.ar1{
+    transform:rotate(0deg);
+    color:#EC4478;
+    opacity:1;
+    z-index:2000;
+}
 .ar2{transform:rotate(60deg);}
 .ar3{transform:rotate(120deg);}
 .ar4{transform:rotate(180deg);}
