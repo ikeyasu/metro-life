@@ -405,6 +405,12 @@ module.exports = function (grunt) {
           branch: 'master'
         }
       },
+      herokucontest: {
+        options: {
+          remote: 'git@heroku.com:kurukuru.git',
+          branch: 'master'
+        }
+      },
       openshift: {
         options: {
           remote: 'openshift',
