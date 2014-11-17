@@ -12,7 +12,7 @@ exports.requestTrainsNearBy = function(station, railway, callback) {
     Station.requestStationsNearBy(station, railway, function(err, stations) {
       for (var dest in stations) {
         stations[dest] = stations[dest].reduce(function (prev, cur, index) {
-          return prev.concat(findTrainsAtStation(cur, dest, allTrains));
+          return prev.concat(findTrainsAtStation(cur, dest, railway, allTrains));
         }, []);
       }
       callback(undefined, stations);
@@ -20,8 +20,12 @@ exports.requestTrainsNearBy = function(station, railway, callback) {
   });
 };
 
-function findTrainsAtStation(station, destStation, trains) {
+function findTrainsAtStation(station, destStation, railway, trains) {
   return trains.reduce(function(prev, cur) {
+    if (railway === "odpt.Railway:TokyoMetro.MarunouchiBranch")
+      railway = "odpt.Railway:TokyoMetro.Marunouchi";
+    if (cur["odpt:railway"] !== railway)
+      return prev;
     if (cur["odpt:fromStation"] === station &&
         cur["odpt:railDirection"] === Station.convertToRailDirection(destStation))
       prev.push(cur);

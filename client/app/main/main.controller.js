@@ -9,17 +9,42 @@ angular.module('metroLifeApp')
     function getNow() {
       return (MOCK === true) ? new Date('2014-10-19T16:31:45+09:00') : new Date();
     }
-    function getTommorow(now) {
-      return new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+
+    function addDay(date, days) {
+      date = date ? date : getNow();
+      var timezoneOffset = date.getTimezoneOffset() * 60 * 1000;
+      var time = date.getTime();
+      var now = new Date();
+       var timezoneOffset2;
+
+      time += (1000 * 60 * 60 * 24) * days;
+      now.setTime(time);
+
+      timezoneOffset2 = now.getTimezoneOffset() * 60 * 1000;
+      if (timezoneOffset !== timezoneOffset2) {
+        var diff = timezoneOffset2 - timezoneOffset;
+        time += diff;
+        now.setTime(time);
+      }
+
+      return now;
     }
+
+    function getYesterday(date) {
+      return addDay(date, -1);
+    }
+
+    function getTommorow(date) {
+      return addDay(date, 1);
+    }
+
     function getDateObjFromTimeString(time, now) {
       now = now ? now : getNow();
-      var date = new Date(now.toDateString() + ' ' + time);
-      var diff = date - now;
-      if (diff < 0) {
-        date = getDateObjFromTimeString(time, getTommorow(now));
+      if (parseInt(time) < 4 && now.getHours() > 4) {
+        return new Date(getTommorow(now).toDateString() + ' ' + time);
       }
-      return date;
+      return new Date(now.toDateString() + ' ' + time);
+
     }
     $scope.getDateObjFromTimeString = getDateObjFromTimeString; // for test
 
@@ -48,7 +73,6 @@ angular.module('metroLifeApp')
       $scope.selectedIndex = index;
     };
 
-
     var timerIds = [];
 
     function setStationAndDirection(station, direction) {
@@ -57,55 +81,82 @@ angular.module('metroLifeApp')
     });
     timerIds = [];
     $scope.nearbyTrainList = [];
+    var MAXIMUM_TIMELEFT = 30 * 60; // Show upcoming trains in 30 mins (1800 sec)
+
+    function addTrainToNearbyTrainList(train, time, isTimetable) {
+      var delay = train['odpt:delay'] ? train['odpt:delay'] : 0;
+      var dateObjToArrive = getDateObjFromTimeString(time);
+      dateObjToArrive.setTime(dateObjToArrive.getTime() + (delay));
+      var item = {
+        depatureTime: time,
+        isTimetable: isTimetable,
+        isTimetableCss: isTimetable ? 'timetable' : '',
+        delayStatus: train['odpt:delay'] ? true : false,
+        delayStatusCopy: train['odpt:delay'] ? (train['odpt:delay'] / 60) + '分遅れ' : '平常運行',
+        dateObjToArrive: dateObjToArrive,
+        trainType: train['odpt:trainType'] === 'odpt.TrainType:TokyoMetro.Local' ? '普通' : '快速',
+        trainTypeCss: train['odpt:trainType'].indexOf('ocal') > -1 ? 'local' : 'rapid',
+        timeToCurrentStation: '',
+        timespan: null,
+        barWidth: 0,
+        dotRotate: '',
+      };
+      var timerId = countdown(
+          function(ts) {
+            var position = (ts.value / 1000) / (MAXIMUM_TIMELEFT);
+            if (position > 1.0) {
+              return;
+            }
+            if (ts.value < 0 && item.added) {
+              // refresh
+              setStationAndDirection($scope.selectedStation['odpt:station'],
+                  $scope.currentDirection['odpt:station']);
+              return;
+            } else if (ts.value < 0 && !item.added) {
+              return;
+            }
+            item.timeToCurrentStation =
+              ('0' + ts.minutes).substr(-2) + ':' + ('0' + ts.seconds).substr(-2);
+            item.barWidth = 30 + (1 - position) * 60 + '%';
+            item.dotRotate = 'rotate(' + (360 * position) + 'deg)';
+            if (!item.timespan) {
+              item.timespan = ts;
+              item.added = true;
+              var i = _.findIndex($scope.nearbyTrainList, function(a) {
+                return a.depatureTime === item.depatureTime;
+              });
+              if (i > -1) {
+                if ($scope.nearbyTrainList[i].isTimetable) {
+                  $scope.nearbyTrainList[i] = item;
+                }
+              } else {
+                $scope.nearbyTrainList.push(item);
+              }
+              $scope.nearbyTrainList =
+                $scope.nearbyTrainList.sort(function(a, b) {
+                  return a.timespan.value - b.timespan.value;
+                });
+            }
+            item.timespan = ts;
+          },
+          item.dateObjToArrive,
+          /*jslint bitwise: true */
+          countdown.HOURS | countdown.MINUTES | countdown.SECONDS);
+      timerIds.push(timerId);
+    }
+
+    requestStationTimetable(station, direction).then(function(d) {
+      _(d).forEach(function(train) {
+        addTrainToNearbyTrainList(train, train['odpt:departureTime'], true);
+      });
+    });
+
     $http.get('/api/tokyometro/trains/nearby/' + station)
       .then(function (data) {
-        var downDirection = data.data[direction];
-        _(downDirection).forEach(function (train) {
-          var item = {
-            delayStatus: train['odpt:delay'] !== 0 ? true : false,
-            delayStatusCopy: train['odpt:delay'] === 0 ? '平常運行' : parseInt(train['odpt:delay'] / 60) + '分遅れ',
-            dateObjToArrive: null,
-            trainType: train['odpt:trainType'] === 'odpt.TrainType:TokyoMetro.Local' ? '普通' : '快速',
-            trainTypeCss: train['odpt:trainType'].indexOf('ocal') > -1 ? 'local' : 'rapid',
-            timeToCurrentStation: '',
-            timespan: null,
-            barWidth: 0,
-            dotRotate: '',
-          };
+        _(data.data[direction]).forEach(function (train) {
           requestDepatureTime(train['owl:sameAs'])
             .then(function (time) {
-              var MAXIMUM_TIMELEFT = 30 * 60; // Show upcoming trains in 30 mins (1800 sec)
-              item.dateObjToArrive = getDateObjFromTimeString(time);
-              var timerId = countdown(
-                    function(ts) {
-                      var position = (ts.value / 1000) / (MAXIMUM_TIMELEFT);
-                      if (position > 1.0) {
-                        return;
-                      }
-                      if (ts.value < 0) {
-                        // refresh
-                        setStationAndDirection($scope.selectedStation['odpt:station'],
-                            $scope.currentDirection['odpt:station']);
-                        return;
-                      }
-                      item.timeToCurrentStation =
-                           ('0' + ts.minutes).substr(-2) + ':' + ('0' + ts.seconds).substr(-2);
-                      item.barWidth = 30 + (1 - position) * 60 + '%';
-                      item.dotRotate = 'rotate(' + (360 * position) + 'deg)';
-                      if (!item.timespan) {
-                        item.timespan = ts;
-                        $scope.nearbyTrainList.push(item);
-                        $scope.nearbyTrainList =
-                          $scope.nearbyTrainList.sort(function(a, b) {
-                            return a.timespan.value - b.timespan.value;
-                          });
-                      }
-                      item.timespan = ts;
-                    },
-                    item.dateObjToArrive,
-                    /*jslint bitwise: true */
-                    countdown.HOURS | countdown.MINUTES | countdown.SECONDS);
-                timerIds.push(timerId);
+              addTrainToNearbyTrainList(train, time, false);
             });
         });
       })
@@ -164,8 +215,30 @@ angular.module('metroLifeApp')
 
     function getDayType(date) {
       date = date ? date : new Date();
+      if (date.getHours() < 4) {
+        date = getYesterday(date);
+      }
       var w = ['holidays','weekdays','weekdays','weekdays','weekdays','weekdays','saturdays'];
       return w[date.getDay()];
+    }
+
+    function requestStationTimetable(station, direction) {
+      var deferred = $q.defer();
+      $http.get('/api/tokyometro/stations/timetable/' + station + '/' + direction + '/' + getDayType())
+        .then(function (data) {
+          var table = data.data;
+
+          var index = _.findIndex(table, function (cur) {
+            return (getDateObjFromTimeString(cur['odpt:departureTime']) > new Date()) &&
+              (getDateObjFromTimeString(cur['odpt:departureTime']) - new Date()) < 1000 * 60 * 30;
+          });
+          if (index > -1) {
+            deferred.resolve(table.slice(index, table.length));
+          } else {
+            deferred.resolve([]);
+          }
+        });
+      return deferred.promise;
     }
 
     function requestDepatureTime(train) {

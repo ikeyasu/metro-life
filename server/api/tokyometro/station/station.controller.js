@@ -44,6 +44,30 @@ exports.raildirection = function(req, res) {
   });
 };
 
+// Get station's timetable
+exports.timetable = function(req, res) {
+  var type = req.params.type ? req.params.type : "weekdays";
+  Tokyometro.request({
+    "rdf:type": "odpt:StationTimetable",
+    "odpt:station": req.params.station,
+    "odpt:railDirection": Station.convertToRailDirection(req.params.direction)
+  }, function(err, json){
+    if(err) { return handleError(res, err); }
+    if(!json) { return res.send(404); }
+    var ret = json.reduce(function(prev, cur) {
+      if (type === "saturdays" && cur["odpt:saturdays"]) {
+        return cur["odpt:saturdays"];
+      } else if (type === "holidays" && cur["odpt:holidays"]) {
+        return cur["odpt:holidays"];
+      } else if (type === "weekdays" && cur["odpt:weekdays"]) {
+        return cur["odpt:weekdays"];
+      }
+      return prev;
+    }, null);
+    return res.json(ret);
+  });
+};
+
 function handleError(res, err) {
   return res.send(500, err);
 }

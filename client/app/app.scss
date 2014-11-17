@@ -273,15 +273,13 @@ body{
     border:2px solid $mainColor;
     box-shadow: 0 0 0 2px #1FA432;
 }
+.dot.timetable {
+    background-color:#CCC;
+}
 .dot.true{
     background-color:#ECB144;
     height:24px;
     width:24px;
-}
-.dot.red{
-    background-color:#EC5757;
-    height:12px;
-    width:12px;
 }
 
 

@@ -13,7 +13,7 @@
             </div>
             <ul class="dot-container" style="">
                 <li class="dot-wrap" ng-style="{'transform': train.dotRotate}" ng-repeat="train in nearbyTrainList">
-                    <div class="dot {{train.delayStatus}} {{train.trainTypeCss}}"  ng-click="changeCenter($index)" ng-class="{ 'active': $index == selectedIndex }"></div>
+                  <div class="dot {{train.isTimetableCss}} {{train.delayStatus}} {{train.trainTypeCss}}"  ng-click="changeCenter($index)" ng-class="{ 'active': $index == selectedIndex }"></div>
                 </li>
             </ul>
 
