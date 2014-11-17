@@ -171,14 +171,24 @@ angular.module('metroLifeApp')
     $http.get('/api/tokyometro/railways')
       .then(function (data) {
         $scope.railways = data.data;
+        var defaultRailway = 'odpt.Railway:TokyoMetro.Tozai';
+        if (localStorage && localStorage.currentRailway) {
+            defaultRailway = localStorage.currentRailway;
+        }
         var i = _.findIndex(data.data, function (railway) {
-          return railway['owl:sameAs'] === 'odpt.Railway:TokyoMetro.Tozai';
+          return railway['owl:sameAs'] === defaultRailway;
         });
+        i = Math.min(i, data.data.length - 1);
         $scope.selectedRailway = data.data[i];
 
+        var defaultStation = 'odpt.Station:TokyoMetro.Tozai.Urayasu';
+        if (localStorage && localStorage.currentStation) {
+            defaultStation = localStorage.currentStation;
+        }
         i = _.findIndex($scope.selectedRailway['odpt:stationOrder'], function (station) {
-          return station['odpt:station'] === 'odpt.Station:TokyoMetro.Tozai.Urayasu';
+          return station['odpt:station'] === defaultStation;
         });
+        i = Math.max(i, 0);
         $scope.selectedStation = $scope.selectedRailway['odpt:stationOrder'][i];
         if ($scope.apply) { // On test mode, apply() does not exist.
           $scope.apply();
@@ -194,10 +204,18 @@ angular.module('metroLifeApp')
       }
       $scope.currentStation = $scope.selectedStation;
       var station = $scope.currentStation['odpt:station'];
+      var defaultDirection = null;
+      if (localStorage && localStorage.currentDirection) {
+          defaultDirection = localStorage.currentDirection;
+      }
       $http.get('/api/tokyometro/stations/raildirection/' + station)
         .then(function (data) {
           $scope.directions = data.data;
-          $scope.selectedDirection = $scope.directions[0];
+          var i = _.findIndex($scope.directions, function (station) {
+            return station['odpt:station'] === defaultDirection;
+          });
+          i = Math.max(i, 0);
+          $scope.selectedDirection = $scope.directions[i];
         });
     };
 
@@ -209,6 +227,9 @@ angular.module('metroLifeApp')
         return;
       }
       $scope.currentDirection = $scope.selectedDirection;
+      localStorage.currentStation = $scope.selectedStation['odpt:station'];
+      localStorage.currentRailway = $scope.selectedRailway['owl:sameAs'];
+      localStorage.currentDirection = $scope.selectedDirection['odpt:station'];
       setStationAndDirection($scope.selectedStation['odpt:station'],
           $scope.currentDirection['odpt:station']);
     };
