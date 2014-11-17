@@ -3,8 +3,8 @@ $fa-font-path: "/bower_components/font-awesome/fonts";
 
 @import 'bootstrap-sass-official/vendor/assets/stylesheets/bootstrap';
 @import 'font-awesome/scss/font-awesome';
-@import url(http://fonts.googleapis.com/css?family=Share+Tech);
-@import url(http://fonts.googleapis.com/css?family=PT+Mono);
+@import url(//fonts.googleapis.com/css?family=Share+Tech);
+@import url(//fonts.googleapis.com/css?family=PT+Mono);
 
 // Component styles are injected through grunt
 // injector
@@ -155,7 +155,7 @@ body{
     width:10px;
     z-index:500;
 }
- 
+
 .ab-n{transform:rotate(-5deg);}
 .ab-i{transform:rotate(-9deg);}
 .ab-m{transform:rotate(-13deg);}
@@ -274,7 +274,7 @@ body{
     box-shadow: 0 0 0 2px #1FA432;
 }
 .dot.timetable {
-    background-color:#CCC;
+    background-color:#0883A2;
 }
 .dot.true{
     background-color:#ECB144;
@@ -329,7 +329,7 @@ nav{
 }
 
 /*********\
-Loading 
+Loading
 \*********/
 .loading{
 

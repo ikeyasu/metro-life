@@ -54,17 +54,16 @@ exports.timetable = function(req, res) {
   }, function(err, json){
     if(err) { return handleError(res, err); }
     if(!json) { return res.send(404); }
-    var ret = json.reduce(function(prev, cur) {
-      if (type === "saturdays" && cur["odpt:saturdays"]) {
-        return cur["odpt:saturdays"];
-      } else if (type === "holidays" && cur["odpt:holidays"]) {
-        return cur["odpt:holidays"];
-      } else if (type === "weekdays" && cur["odpt:weekdays"]) {
-        return cur["odpt:weekdays"];
-      }
-      return prev;
-    }, null);
-    return res.json(ret);
+    // json() doesn't work because of bug (maybe..)
+    // So, building text manually..
+    var table = json[0]["odpt:" + type];
+    var ret = "[";
+    res.set('Content-Type', 'application/json');
+    for (var i = 0; i < table.length - 1; i++) {
+      ret += JSON.stringify(table[i]) + ",";
+    }
+    ret += JSON.stringify(table[i]) + "]";
+    return res.send(ret).end();
   });
 };
 
