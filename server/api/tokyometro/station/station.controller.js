@@ -56,14 +56,14 @@ exports.timetable = function(req, res) {
     if(!json) { return res.send(404); }
     // json() doesn't work because of bug (maybe..)
     // So, building text manually..
-    var ret = json[0]["odpt:" + type];
-    var json = "[";
+    var table = json[0]["odpt:" + type];
+    var ret = "[";
     res.set('Content-Type', 'application/json');
-    for (var i = 0; i < ret.length - 1; i++) {
-      json += JSON.stringify(ret[i]) + ",";
+    for (var i = 0; i < table.length - 1; i++) {
+      ret += JSON.stringify(table[i]) + ",";
     }
-    json += JSON.stringify(ret[i]) + "]";
-    return res.send(json).end();
+    ret += JSON.stringify(table[i]) + "]";
+    return res.send(ret).end();
   });
 };
 
